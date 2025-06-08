@@ -1,0 +1,45 @@
+// EXAMPLE SWITCH BUTTON TO SWITCH BETWEEN PAGES
+
+{!showUpload && ( 
+        <div className="container-outer">
+          <div className="sub-container-row">
+            <h3>Load from YouTube </h3>
+            <img
+            src="public\assets\switch_icon.png"
+            alt="Switch Icon"
+            className="switch-icon"
+            onClick={() => {
+              setShowUpload(!showUpload);
+            }}
+            />
+          </div>
+           <DownloadYouTube 
+            onDownloadComplete={(path) => {
+              setVideoPath(path);
+              setUploadStatus(`Downloaded: ${path}`)
+            }}
+          />
+          </div>
+      )}
+
+
+
+      """
+def convert_video_for_browser(input_path, output_path):
+    if not os.path.exists(input_path):
+        print(f"Cannot convert video — file not created at {input_path}")
+        return
+
+    ffmpeg_path = r"C:\Users\coled\ffmpeg-7.1-essentials_build\ffmpeg-7.1-essentials_build\bin\ffmpeg.exe"
+    command = [
+        ffmpeg_path,
+        "-i", input_path,
+        "-c:v", "libx264",
+        "-crf", "23",
+        "-preset", "veryfast",
+        "-movflags", "+faststart",
+        output_path
+    ]
+    print(f"Converting with FFmpeg: {' '.join(command)}")
+    subprocess.run(command, check=True)
+"""
