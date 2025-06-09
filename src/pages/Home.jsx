@@ -17,7 +17,7 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
       <>
       <div className="parallax-bg" ></div>
       <div className="home">
-        <h1 className="title">RouteSketch</h1>
+        <h1 className="title">RouteScan</h1>
         
           <div className="login" >
               <h1 style={{fontWeight: "500"}} >

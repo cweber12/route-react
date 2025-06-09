@@ -43,7 +43,6 @@ const ExtractPose = ({
   const [adjustBrightness, setAdjustBrightness] = useState(false);
   const [gamma, setGamma] = useState(1.0);
   const [processing, setProcessing] = useState(false);
-  const [showModelInfo, setShowModelInfo] = useState(false);
   const [enhanceContrast, setEnhanceContrast] = useState(false);
   const [showParams, setShowParams] = useState(false);
   const [poseModel, setPoseModel] = useState("full");

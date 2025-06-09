@@ -540,6 +540,7 @@
   margin-right: 20px;
   margin-top: 10px;    
   border-radius: 50%;
+  border: 2px solid rgb(228, 255, 146);
   background-image: url('public/assets/user_img.jpg');
   background-size: contain;
   background-position: center;

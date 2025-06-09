@@ -139,14 +139,14 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                 className={({ isActive }) => (isActive ? "active-link" : "")}
                 onClick={handlePageChange}
               >
-                Upload
+                UPLOAD
               </NavLink>
               <NavLink 
                 to="/route-data" 
                 className={({ isActive }) => (isActive ? "active-link" : "")}
                 onClick={handlePageChange}
               >
-                Routes
+                ROUTES
               </NavLink>
              
             </NavMenu>
