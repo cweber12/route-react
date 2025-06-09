@@ -58,7 +58,8 @@ PUSH TO ECR:        docker push 537124934274.dkr.ecr.us-east-2.amazonaws.com/cli
 
 
 #### PUSH TO EC2
+scp -i "C:\Projects\RouteMap\route-map-server.pem" -r C:\Projects\routemap-ec2\frontend ec2-user@3.14.149.218:/home/ec2-user/
 
- scp -i "C:\Projects\RouteMap\route-map-server.pem" -r C:\Projects\routemap-ec2\frontend ec2-user@3.14.149.218:/home/ec2-user/
 
-
+### PUSH TO S3
+aws s3 sync .\dist\ s3://your-s3-bucket-name/ --delete

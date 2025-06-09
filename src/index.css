@@ -113,11 +113,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
-html {
-  /*background-image: url('/assets/simple_background.webp');*/
-  
+html {  
   background: linear-gradient(360deg, rgba(9, 19, 27, 0.9), rgba(37, 72, 46, 0.8));
-  /*background-image: url('public/assets/sunset.webp');*/
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

@@ -85,7 +85,7 @@ export default function TimestampThumbnails({
                 className="thumbnail-image"
                 onError={e => {
                   e.target.onerror = null;
-                  e.target.src = "public/assets/mountain_cutout.PNG";
+                  e.target.src = "/assets/mountain_cutout.PNG";
                 }}
               />
             </div>

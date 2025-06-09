@@ -541,7 +541,7 @@
   margin-top: 10px;    
   border-radius: 50%;
   border: 2px solid rgb(228, 255, 146);
-  background-image: url('public/assets/user_img.jpg');
+  background-image: url('/assets/user_img.jpg');
   background-size: contain;
   background-position: center;
    
@@ -647,7 +647,7 @@
   left: 50px;
   width: 90%;
   height: 90%;
-  background-image: url('public/assets/mountain_cutout.PNG');
+  background-image: url('/assets/mountain_cutout.PNG');
   background-size:contain;
   background-position: center;
   background-repeat: no-repeat;

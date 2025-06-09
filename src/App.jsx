@@ -6,10 +6,10 @@ import Navbar from "./components/Navbar/Navbar";
 import "./App.css";
 import ViewRouteData from "./pages/ViewRouteData";
 
-
 const App = () => {
   const [videoPath, setVideoPath] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginChecked, setLoginChecked] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +27,7 @@ const App = () => {
   useEffect(() => {
     const user = sessionStorage.getItem("userName");
     if (user) setIsLoggedIn(true);
+    setLoginChecked(true);
   }, []);
 
   useEffect(() => {
@@ -44,6 +45,8 @@ const App = () => {
       window.removeEventListener("beforeunload", clearTempOnUnload);
     };
   }, []);
+
+  if (!loginChecked) return null; // or a loading spinner
 
   return (
     <>
