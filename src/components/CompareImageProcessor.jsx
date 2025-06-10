@@ -116,7 +116,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     setProcessing(true);
 
     try {
-      const res = await fetch(`${API}/api/compare-image-multi-skeleton`, {
+      const res = await fetch(`${API}/api/compare-image-multi-cropped`, {
         method: "POST",
         body: formData,
       });
@@ -135,22 +135,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     }
   };
 
-  const handleReset = async () => {
-    try {
-      const res = await fetch(`${API}/api/clear-output`, {
-        method: "POST",
-      });
-
-      if (res.ok) {
-        setImageFile(null);
-        setVideoUrl("");
-        setProcessedImage(false);
-        setPreprocessSteps("");
-      }
-    } catch (err) {
-      alert("Error clearing output.");
-    }
-  };
 
   // Helper for image preview URL
   const imageUrl = imageFile ? URL.createObjectURL(imageFile) : null;
@@ -243,10 +227,16 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                 top: -7,
                 left: 0,
                 width: "100%", // always match rendered image width
-                height: 16,
+                height: 32, // increased height to make touch easier
                 zIndex: 30,
-                pointerEvents: "none",
+                pointerEvents: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
+                background: "rgba(0,0,0,0.01)", // transparent but blocks pointer events
               }}
+              onTouchStart={e => e.stopPropagation()}
+              onPointerDown={e => e.stopPropagation()}
             >
               <input
                 type="range"
@@ -299,13 +289,16 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                 position: "absolute",
                 top: 0,
                 left: 0,
-                width: 16,
+                width: 32, // increased width to make touch easier
                 height: renderedImgDims.height, // match rendered image height
                 zIndex: 30,
                 transform: "rotate(90deg)",
                 transformOrigin: "top left",
-                pointerEvents: "none",
+                pointerEvents: "auto",
+                background: "rgba(0,0,0,0.01)", // transparent but blocks pointer events
               }}
+              onTouchStart={e => e.stopPropagation()}
+              onPointerDown={e => e.stopPropagation()}
             >
               <input
                 type="range"
@@ -364,7 +357,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         <label 
           htmlFor="image-upload" 
           className="button-label"
-
         >
           Select an Image
         </label>
@@ -378,18 +370,21 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         <button 
           onClick={handleProcess} 
           disabled={processing || !imageFile}
-          className={processing ? "processing" : ""}
-
+          className={processing ? "processing process-button" : "process-button"}
         >
           Process & View
         </button>
-        <button
-          onClick={handleCompareMultiple}
-          disabled={processing || !imageFile || (selectedS3PathArray?.length ?? 0) < 2}
 
-        >
-          Compare Multiple
-        </button>
+        {/* Show Compare Multiple only if multiple thumbnails are selected */}
+        {selectedS3PathArray && selectedS3PathArray.length > 1 && (
+          <button
+            className="process-button"
+            onClick={handleCompareMultiple}
+            disabled={processing || !imageFile}
+          >
+            Compare Multiple
+          </button>
+        )}
       </div>
 
 

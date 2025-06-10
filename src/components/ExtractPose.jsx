@@ -167,13 +167,30 @@ const ExtractPose = ({
 
   return (
 <>
-    <div className="parent-container parent-container-column" style={{alignItems: "center"}}>
-      <div className="parent-container parent-container-row" style={{justifyContent: "center" }}>
+      <div 
+      className="parent-container parent-container-row" 
+      style={{
+        justifyContent: "center",
+        alignItems: "flex-start", 
+        boxSizing: "border-box",
+        width: "100%",
+        padding: 0, 
+        margin: 0, 
+      }}
+      >
+      <div className="child-container child-container-column">
       <select
         id="poseModel"
         value={poseModel}
         onChange={(e) => setPoseModel(e.target.value)}
-        style={{ height: "40px", width: "280px", borderRadius: "4px", fontSize: "16px"}}
+        style={{ 
+          height: "40px", 
+          width: "280px", 
+          borderRadius: "4px", 
+          fontSize: "20px", 
+          fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+        
+        }}
         disabled={!videoPath || loading || processing}
       >
         {poseOptions.map((opt) => (
@@ -182,7 +199,6 @@ const ExtractPose = ({
           </option>
         ))}
       </select>
-      
       <button
           onClick={() => {
             setShowParams(!showParams);
@@ -192,38 +208,18 @@ const ExtractPose = ({
           disabled={!videoPath || loading || processing}
         >
         
-          {showParams ? "Hide" : "Update"} Parameters
+          {showParams ? "HIDE" : ""} SETTINGS
      
       </button>
-      </div>
-      <div className="parent-container parent-container-row" style={{justifyContent: "center" }}>
-
-      <button
-          onClick={handleProcessVideo}
-          className={processing ? "processing" : ""}
-          style={{borderRadius: "4px"}}
-          disabled={!videoPath || loading || processing}
-        >
-          {processing ? "Loading..." : "Run"}
-          
-        </button>
-        {processing && (
-        <button
-          style={{borderRadius: "4px"}}
-          onClick={handleCancel}>Cancel
-        </button>
-      )}
-      </div>
-      </div>
-
       {showParams && (
         <div className="child-container child-container-column" 
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.5)", 
-          color: "white", 
-          borderRadius: "10px", 
+          color: "rgb(228, 255, 146)", 
+          borderRadius: "0 0 4px 4px", 
           padding: "10px 20px", 
           boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+          width: "280px",
           }}
           >
         <ModelSettings
@@ -256,6 +252,31 @@ const ExtractPose = ({
         />
         </div>
       )}
+      </div>
+      
+      <div className="child-container child-container-column">
+
+      <button
+          onClick={handleProcessVideo}
+          className={processing ? "processing process-button" : "process-button"}
+          style={{borderRadius: "4px"}}
+          disabled={!videoPath || loading || processing}
+        >
+          {processing ? "RUNNING..." : "RUN"}
+          
+        </button>
+        {processing && (
+        <button
+          style={{borderRadius: "4px"}}
+          onClick={handleCancel}>CANCEL
+        </button>
+      )}
+     
+      
+  
+
+      </div>
+      </div>
 
     </>
   );

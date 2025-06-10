@@ -73,26 +73,14 @@ const UploadVideo = () => {
         
       {!videoPath && (
         <>
-        <h1 
-        style={{
-          background: "linear-gradient(90deg, rgba(11, 17, 27, 0.4), rgba(0,0,0,0))",
-          color: "rgb(228, 255, 146)",
-          fontFamily: "Courier New, monospace",
-          width: "100%",
-          padding: "10px 20px",
-          borderRadius: "4px 4px 0 0",
-          fontSize: "36px",
-          fontWeight: "500",
-          margin: 0
-
-        }}
-        >Upload</h1>
+        <h1 className="upload-title">Upload a Video</h1>
       <div 
       className="parent-container parent-container-row"
       style={{
         padding: "20px", 
-        background: "rgba(255, 255, 255, 0.9)", 
+        background: "rgba(0, 0, 0, 0.5)", 
         borderRadius: "0 0 4px 4px",
+        color: "#ccc", 
       
       }}
       
@@ -109,6 +97,8 @@ const UploadVideo = () => {
       )}
       { videoPath && (
         <>
+        <h1 className="upload-title">SCAN ROUTE PROGRESSION</h1>
+                
         <div 
             className="parent-container parent-container-row" 
             style={{ 
@@ -187,6 +177,8 @@ const UploadVideo = () => {
           <div className="parent-container parent-container-column" style={{ alignItems: 'center', flex: 1, width: '100%' }}>
             
             {videoUrl && (
+              <>
+              
               <div 
               style={{ 
                 padding: "50px 20px 20px 50px", 
@@ -257,6 +249,8 @@ const UploadVideo = () => {
                     left: 0,
                     pointerEvents: "none",
                     zIndex: 900,
+                    borderRadius: "2px",
+                    boxShadow: "0 2px 4px rgba(#e4ff92, 0.5)",
                   }}
                 >
                   <rect
@@ -265,7 +259,7 @@ const UploadVideo = () => {
                     width={renderedVideoWidth - (((editMode === 'sift' ? siftLeft : climberLeft) / 100) * renderedVideoWidth) - (((editMode === 'sift' ? siftRight : climberRight) / 100) * renderedVideoWidth)}
                     height={renderedVideoHeight - (((editMode === 'sift' ? siftTop : climberUp) / 100) * renderedVideoHeight) - (((editMode === 'sift' ? siftBottom : climberDown) / 100) * renderedVideoHeight)}
                     fill="none"
-                    stroke={editMode === 'sift' ? "greenyellow" : "#007bff"}
+                    stroke={editMode === 'sift' ? "#e4ff92" : "#007bff"}
                     strokeWidth="3"
                   />
                 </svg>
@@ -439,17 +433,16 @@ const UploadVideo = () => {
                 </div>
               </div>
               </div>
-              
+             </> 
             )}
             {/* Controls below video: SIFT/Climber toggle and checkboxes */}
             
             </div>
           </div>
 
-        </>
-      )}
+      
       {/* ExtractPose on top of video/annotation UI */}
-            <div className="parent-container parent-container-column" style={{ padding: 0, marginLeft: -20, width: '100%'}}>
+           
               <ExtractPose
                 videoPath={videoPath}
                 userName={userName}
@@ -480,8 +473,9 @@ const UploadVideo = () => {
                 multiplePeople={multiplePeople}
                 style={{ width: '100%' }}
               />
-            </div>
-
+       
+         </>
+      )}
       {/* Detection and S3 upload below */}
       {poseFilePath && !loading && videoUrl && (
         <ViewRefFrames

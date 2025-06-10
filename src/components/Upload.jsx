@@ -55,7 +55,7 @@ const Upload = ({ setVideoPath, setVideoUrl}) => {
 
   return (
       <div className="child-container child-container-column"> 
-        <p>Upload a video from your device</p>       
+        <p>From your device</p>       
         <label 
           htmlFor="video-upload" 
           className="button-label" 

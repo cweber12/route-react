@@ -4,11 +4,11 @@ import styled from "styled-components";
 
 export const Nav = styled.nav`
     background: url("/assets/4020330.jpg");
-    font-family: 'Courier New', Courier, monospace;
     background-size: cover;
+    background-attachment: fixed;
     background-position: center bottom;
     background-repeat: no-repeat;
-    height: 120px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -21,6 +21,12 @@ export const Nav = styled.nav`
     max-width: 100vw;
     z-index: 1000;
     box-sizing: border-box;
+
+    @media screen and (max-width: 768px) {
+        height: 100px;
+        max-width: 100vw; 
+        min-width: 100vw;
+    }
 
     
 `;
@@ -45,12 +51,13 @@ export const NavBottom = styled.div`
 export const NavMenu = styled.div`
     display: flex;
     flex-direction: row;
-    width: 100%; 
+    max-width: 100vw; 
+    min-width: 100vw; 
     align-items: center;
 
     gap: 80px;
     background: rgba(30, 30, 30, 0.8);
-    padding-left: 40px; 
+
     justify-content: center;
 
 
@@ -66,10 +73,10 @@ export const NavMenu = styled.div`
 
 export const NavLink = styled(Link)`
     color: lightgray;
-    background:rgb(32, 45, 63); 
-    width: 200px;
+    background:rgba(39, 15, 15, 0.3); 
+    width: 280px;
     font-size: 20px;
-    font-weight: 550;
+    font-weight: 520;
     padding: 10px 16px;
     display: flex;
     justify-content: center;
@@ -82,8 +89,20 @@ export const NavLink = styled(Link)`
     border-radius: 4px;   
     border-left: 4px solid rgb(228, 255, 146);
     border-right: 4px solid #e4ff92;
+    
     &.active-link {
-        background: rgb(228, 255, 146);
+        font-size: 22px;
+        background: linear-gradient(180deg, rgba(39, 15, 15, 0.3), rgba(39, 15, 15, 0.5));
+        font-weight: 550;
+        text-shadow: 0 0 5px rgba(45, 16, 16, 0.8);
+        border-top: 1px solid rgb(228, 255, 146);
+        border-bottom: 1px solid #e4ff92;
+
+        @media screen and (max-width: 768px) {
+            font-size: 14px;
+            width: 30%; 
+        }
+
     }
 
     &:hover {
@@ -92,23 +111,23 @@ export const NavLink = styled(Link)`
     }
 
     @media screen and (max-width: 768px) {
-        font-size: 16px;
+        font-size: 14px;
         padding: 8px 14px;
-        width: 100px; 
+        width: 40vw; 
         
     }
 
     @media screen and (max-width: 480px) {
         font-size: 14px;
         padding: 6px 12px;
-        width: 40%
+        width: 40vw;
         
     }
 
     @media screen and (max-width: 360px) {
         font-size: 12px;
         padding: 5px 10px;
-        width: 40px;
+        width: 40vw;
     }
 `;
 
@@ -125,7 +144,6 @@ export const LogoutButton = styled.button`
     padding: 6px 12px;
     cursor: pointer;
     font-size: 20px;
-    font-family: courier, sans-serif;
     font-weight: 500;
     border-radius: 4px;
     transition: background-color 0.2s ease, transform 0.1s ease-in-out;

@@ -15,6 +15,7 @@ const ViewRouteData = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedRecentAttempts, setSelectedRecentAttempts] = useState([]); // For recent routes selection
   const [showCompareForRecent, setShowCompareForRecent] = useState(false);
+  const [areaRoutes, setAreaRoutes] = useState([]); // Add this state
 
   const userName = sessionStorage.getItem("userName");
   const bucketName = "route-keypoints";
@@ -119,7 +120,22 @@ const ViewRouteData = () => {
       });
       const ts = await fetchTimestampsForRoute(cleanPath);
       setTimestamps(ts);
+      setAreaRoutes([]); // Clear area routes when a route is selected
     } else {
+      // If an area is selected, fetch all routes under this area from the backend
+      try {
+        const areaPath = pathParts.slice(1).join("/"); // remove userName from path
+        const res = await fetch(`${API}/api/routes-under-area?user=${userName}&area_path=${encodeURIComponent(areaPath)}`);
+        if (res.ok) {
+          const routes = await res.json();
+          setAreaRoutes(routes); // Set area routes for display
+        } else {
+          setAreaRoutes([]);
+        }
+      } catch (err) {
+        console.error("Error fetching routes under area:", err);
+        setAreaRoutes([]);
+      }
       setCheckedTimestamps([]);
       setSelectedRouteInfo(null);
       setTimestamps([]);
@@ -139,7 +155,7 @@ const ViewRouteData = () => {
       nodes = currentNode.children || [];
     }
 
-    const parentName = parentNode ? parentNode.name : "All Areas";
+    const parentName = parentNode ? parentNode.name.toUpperCase() : "ALL AREAS";
     const currentName = currentNode ? currentNode.name : null;
 
     // If at a route node, only show the current route name
@@ -162,15 +178,28 @@ const ViewRouteData = () => {
             margin: "-20px -20px 10px -20px", 
             padding: "10px 20px", 
             color: "rgb(228, 255, 146)",
-            backgroundColor: "rgba(32, 45, 63, 0.4)",
+            backgroundColor: "linear-gradient (180deg, rgba(48, 6, 6, 0.6), rgba(0,0,0,0)",
+            textDecoration: "underline",
+            fontWeight: "520",
           
           }}
           
-          >All Areas</h3>
+          >ALL AREAS</h3>
         )}
         
         {currentName && (
-          <span className="area-navigator-current">{currentName}</span>
+          <h3
+          style={{
+            margin: "-20px -20px 10px -20px", 
+            padding: "10px 20px", 
+            color: "rgb(228, 255, 146)",
+            backgroundColor: "linear-gradient (180deg, rgba(48, 6, 6, 0.6), rgba(0,0,0,0)",
+            textDecoration: "underline",
+            fontWeight: "520",
+          
+          }}
+          
+          >{currentName.toUpperCase()}</h3>
         )}
 
         {(currentNode ? currentNode.children : treeData)?.map((node) => {
@@ -178,6 +207,7 @@ const ViewRouteData = () => {
           return (
             <>
               <span
+             
                 className={`area-navigator-item${nodeType === "route" ? " area-navigator-route" : ""}`}
                 onClick={async () => {
                   const newPath = [...selectionPath, node.name];
@@ -274,20 +304,6 @@ const ViewRouteData = () => {
       <div 
       className="page-container" 
       >
-        <h1 
-        style={{
-          background: "linear-gradient(90deg, rgba(11, 17, 27, 0.4), rgba(0,0,0,0))",
-          color: "rgb(228, 255, 146)",
-          fontFamily: "Courier New, monospace",
-          width: "100%",
-          padding: "10px 20px",
-          borderRadius: "4px 4px 0 0",
-          fontSize: "36px",
-          fontWeight: "500",
-          margin: 0
-
-        }}
-        >Routes</h1>
 
           {/* Search Bar and Previous Area Button */}
           <div className="search-container">
@@ -344,10 +360,7 @@ const ViewRouteData = () => {
           {/* Main Content Logic */}
           {/* Show CompareImageProcessor for recent routes if selected */}
           {showCompareForRecent && selectedRecentAttempts.length > 0 ? (
-
-              <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
-              
-
+            <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
           ) : selectedRouteInfo && timestamps.length > 0 ? (
             // Show TimestampThumbnails for selected route
             <>
@@ -360,12 +373,11 @@ const ViewRouteData = () => {
                 boxSizing: "border-box",
                 borderRadius: "4px 4px 0 0 ", 
                 backgroundColor: "rgba(0, 0, 0, 0.4)",
-                fontFamily: "Courier New, monospace",
 
               
               }}
                 >
-                {selectedRouteInfo.name}
+                {selectedRouteInfo.name.toUpperCase()}
               </h2>
             
               <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
@@ -385,6 +397,31 @@ const ViewRouteData = () => {
               />
               
             </>
+          ) : areaRoutes.length > 0 ? (
+            // Show all route thumbnails under the selected area
+            <div className="area-routes-list">
+              <h3 style={{color: "rgb(228, 255, 146)", margin: "10px 0"}}>Routes in this Area:</h3>
+              <div style={{display: "flex", flexWrap: "wrap", gap: 16}}>
+                {areaRoutes.map((route, idx) => (
+                  <div key={route.name + (route.route_id || '') + '_' + idx} style={{minWidth: 220, maxWidth: 240}}>
+                    <h4 style={{color: "#e4ff92", margin: "0 0 8px 0"}}>{route.name}</h4>
+                    <TimestampThumbnails
+                      basePath={[userName, ...(selectionPath), route.name].join("/")}
+                      timestamps={route.timestamps || []}
+                      bucketName="route-keypoints"
+                      checkedTimestamps={checkedTimestamps}
+                      onToggle={folderUri => {
+                        setCheckedTimestamps(prev =>
+                          prev.includes(folderUri)
+                            ? prev.filter(p => p !== folderUri)
+                            : [...prev, folderUri]
+                        );
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           ) : (
             // Show Area Navigator/Map and RecentRoutes on initial load
             <>

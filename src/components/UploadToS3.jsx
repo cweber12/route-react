@@ -284,8 +284,8 @@ const UploadToS3 = ({
   return (
     <>
       {/* --- SEARCH BAR (fixed top left) & SAVE BUTTON (right of search bar) --- */}
-      <div style={{ position: "fixed", top: 20, left: 20, zIndex: 1200, display: "flex", alignItems: "stretch", width: "40%" }}>
-        <div style={{ width: "60%", borderRadius: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", background: "#fff" }}>
+      <div className="search-container" >
+        <div className="search-bar" >
           <input
             type="text"
             placeholder="Search area or route…"

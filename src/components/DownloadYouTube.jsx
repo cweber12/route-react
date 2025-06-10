@@ -70,7 +70,7 @@ const DownloadYouTube = ({ onDownloadComplete, setVideoUrl }) => {
                   textWrap: "wrap", 
                 }}
               >
-                Or find a video on
+                From
                 <a
                   href="https://www.youtube.com"
                   target="_blank"
@@ -85,13 +85,13 @@ const DownloadYouTube = ({ onDownloadComplete, setVideoUrl }) => {
         value={url}
         onChange={handleInputChange}
         placeholder="Paste YouTube video URL"
-        style={{width: "250px"}}
+        style={{width: "250px", fontSize: "16px"}}
       />
       
       {showDownload && !downloading && url.trim() !== "" && (
         <>
         <button onClick={handleDownload}
-        className={downloading ? "processing" : ""}>
+        className={downloading ? "processing process-button" : "process-button"}>
           {downloading ? "Downloading..." : "Download Video"}
           
           </button>

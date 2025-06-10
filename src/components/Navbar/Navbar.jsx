@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Nav, NavTop, NavBottom, NavLink, NavMenu, UserIconContainer } from "./NavbarElements";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useLocation } from 'react-router-dom'; 
 
 const Navbar = ({ isLoggedIn, onLogout }) => {
   const userName = sessionStorage.getItem("userName");
   const navigate = useNavigate();
+  const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const userIconRef = useRef(null);
@@ -136,19 +137,18 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
             <NavMenu>
               <NavLink 
                 to="/upload-video" 
-                className={({ isActive }) => (isActive ? "active-link" : "")}
+                className={location.pathname === "/upload-video" ? "active-link" : ""}
                 onClick={handlePageChange}
               >
-                UPLOAD
+                UPLOAD A VIDEO
               </NavLink>
               <NavLink 
                 to="/route-data" 
-                className={({ isActive }) => (isActive ? "active-link" : "")}
+                className={location.pathname === "/route-data" ? "active-link" : ""}
                 onClick={handlePageChange}
               >
-                ROUTES
+                AREAS & ROUTES
               </NavLink>
-             
             </NavMenu>
           </NavBottom>
         </Nav>

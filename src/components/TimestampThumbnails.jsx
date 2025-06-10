@@ -41,11 +41,11 @@ export default function TimestampThumbnails({
     className="parent-container parent-container-row" 
     style={{ 
       width: "100%", 
-      justifyContent: "center", 
-      alignItems: "space-evenly", 
+      justifyContent: "flex-start", 
+      alignItems: "center", 
       }}
       >
-      {timestamps.map((t) => {
+      {timestamps.map((t, idx) => {
         const folderUri = `s3://${bucketName}/${cleanBase}/${t.name}/`;
         const key = `${cleanBase}/${t.name}/route_image.jpg`;
         const url =
@@ -62,7 +62,7 @@ export default function TimestampThumbnails({
 
         return (
           <div
-            key={t.name}
+            key={t.name + '_' + idx}
             className={`child-container thumbnail${isChecked ? " thumbnail--selected" : ""}${isPressed ? " thumbnail--expand" : ""}`}
             onMouseDown={() => handleMouseDown(t.name)}
             onMouseUp={() => handleMouseUp(t.name, folderUri)}

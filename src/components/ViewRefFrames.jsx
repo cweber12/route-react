@@ -92,7 +92,13 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
   return (
     <div 
     className="parent-container parent-container-column" 
-    style={{alignItems: "center", gap: 0}}
+    style={{
+      alignItems: "center", 
+      gap: 0,
+      backgroundColor: "rgba(48, 6, 6, 0.3)",
+      paddingTop: "20px",
+    
+    }}
     >
          
       <Zoom>
@@ -110,9 +116,9 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         gap: "20px", 
         alignItems: "center", 
         justifyContent: "center",
-        backgroundColor: "rgba(48, 6, 6, 0.3)",
+        backgroundColor: "rgba(24, 21, 21, 0.3)",
         borderRadius: "0 0 4px 4px",
-        padding: "10px",
+        padding: "20px",
         alignSelf: "center",
         width: "100%",
         margin: 0, 

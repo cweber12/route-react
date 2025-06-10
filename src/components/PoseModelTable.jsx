@@ -35,7 +35,7 @@ const PoseModelTable = () => {
   ];
 
   return (
-    <div className="child-container child-container-column" style={{fontSize: "12px", fontFamily: "Arial, sans-serif"}}>
+    <div className="child-container child-container-column" style={{fontSize: "12px"}}>
       <table style={{ borderCollapse: "collapse", width: "100%", maxWidth: "350px" }}>
         <thead style={{ color: "#DDA853" }}>
           <tr>
