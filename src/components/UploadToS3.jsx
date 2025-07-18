@@ -117,17 +117,6 @@ const UploadToS3 = ({
     }
   };
 
-  // --- helpers to render dropdowns/routes (unchanged) ---
-  const getCurrentLevelNodes = () => {
-    let nodes = treeData;
-    for (const name of selectionPath) {
-      const match = nodes.find((n) => n.name === name && n.type !== "route");
-      if (match && match.children) nodes = match.children;
-      else return [];
-    }
-    return nodes;
-  };
-
   const renderDropdowns = () => {
     let nodes = treeData;
     let parentName = null;
@@ -148,14 +137,14 @@ const UploadToS3 = ({
 
     return (
       <div className="parent-container parent-container-row" 
-      style={{ width: "100%", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+      style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", textAlign: "center" }}>
         
         {parentName && (
           <>
           <div style={{ display: "flex", flexDirection: "row"}}>
             {grandparentPath.length > 0 && (
               <span
-                style={{ background: "rgba(0,0,0,0.5)", color: "white", cursor: "pointer", padding: "5px 8px", borderRadius: 4, marginRight: 8}}
+                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 8}}
                 onClick={() => setSelectionPath(grandparentPath)}
               >← Prev Area</span>
             )}
@@ -207,7 +196,7 @@ const UploadToS3 = ({
           <>
             {grandparent.length > 0 && (
               <span
-                style={{ background: "rgba(0,0,0,0.5)", color: "white", cursor: "pointer", padding: "5px 8px", borderRadius: 4, marginRight: 8}}
+                style={{ background: "#e9ffa7ff", color: "black", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 8}}
                 onClick={() => setSelectionPath(grandparent)}
               >← Prev Area</span>
             )}
@@ -268,7 +257,7 @@ const UploadToS3 = ({
       });
       const result = await res.json();
       if (res.ok) {
-        setProcessingStatus("Upload Completed");
+        setProcessingStatus("Upload Complete");
         setShowUpload(false);
       } else {
         setProcessingStatus(`Upload failed: ${result.detail}`);
@@ -283,6 +272,12 @@ const UploadToS3 = ({
 
   return (
     <>
+          {/* Show route name under search bar if selected */}
+      {routeName && (
+        <div style={{margin: '12px 0 0 0', color: 'white', fontWeight: 600, fontSize: 20, textAlign: 'left'}}>
+          Selected Route: {routeName}
+        </div>
+      )}
       {/* --- SEARCH BAR (fixed top left) & SAVE BUTTON (right of search bar) --- */}
       <div className="search-container" >
         <div className="search-bar" >
@@ -361,20 +356,18 @@ const UploadToS3 = ({
             {uploadingS3 ? "Saving..." : "Save"}
           </button>
         )}
-      </div>
-
-      {/* --- STATUS --- */}
+         {/* --- STATUS --- */}
       {processingStatus && !uploadingS3 && (
         <p style={{ 
-          position: "fixed", 
-          color: "rgb(228, 255, 146)", 
-          top: 63, 
-          left: 20, 
-          zIndex: 1200, 
+          color: "#c6ff1d", 
           fontFamily: "Courier New, monospace",
           padding: 4, 
-          fontSize: "18px"}}>{processingStatus}</p>
+          fontSize: "18px",
+          alignSelf: "center"
+        }}>{processingStatus}</p>
       )}
+      </div>
+
 
       {/* --- AREA/ROUTE DROPDOWNS & ROUTE NAME INPUT (row above map) --- */}
 

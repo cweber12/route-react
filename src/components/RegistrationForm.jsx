@@ -29,18 +29,20 @@ export default function RegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-       <div className="child-container child-container-column">
+        <div className="child-container child-container-column"
+        style={{padding: 0}} >
             <input
-            style={{width: "220px", height: "30px", fontSize: "18px"}} 
+            style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}} 
             name="username" onChange={handleChange} placeholder="Username" required />
             <input
-            style={{width: "220px", height: "30px", fontSize: "18px"}} 
+            style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}} 
             name="email" onChange={handleChange} placeholder="Email" required />
             <input
-            style={{width: "220px", height: "30px", fontSize: "18px"}} 
+            style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}} 
             name="password" onChange={handleChange} type="password" placeholder="Password" required />
             <button 
             className="button-action"
+            style={{width: "100%",  fontSize: "22px"}}
             type="submit"
             >Register</button>
             <p>{message}</p>

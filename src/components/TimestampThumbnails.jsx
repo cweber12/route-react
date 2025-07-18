@@ -1,5 +1,6 @@
 // TimestampThumbnails.jsx
 import React, { useState } from "react";
+import CompareImageProcessor from "./CompareImageProcessor";
 
 export default function TimestampThumbnails({
   basePath,            // e.g. "userName/Area/Subarea/Route" or "s3://route-keypoints/userName/..."
@@ -37,6 +38,7 @@ export default function TimestampThumbnails({
   };
 
   return (
+    <> 
     <div 
     className="parent-container parent-container-row" 
     style={{ 
@@ -45,13 +47,14 @@ export default function TimestampThumbnails({
       alignItems: "center", 
       }}
       >
-      {timestamps.map((t, idx) => {
+      {[...timestamps].slice().reverse().map((t, idx) => {
         const folderUri = `s3://${bucketName}/${cleanBase}/${t.name}/`;
         const key = `${cleanBase}/${t.name}/route_image.jpg`;
         const url =
           `https://${bucketName}.s3.amazonaws.com/` +
           encodeURIComponent(key).replace(/%2F/g, "/");
 
+        // Use a regex with capture groups for date formatting
         const label = t.name.replace(
           /^(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})$/,
           "$1/$2/$3 at $4:$5:$6"
@@ -63,7 +66,7 @@ export default function TimestampThumbnails({
         return (
           <div
             key={t.name + '_' + idx}
-            className={`child-container thumbnail${isChecked ? " thumbnail--selected" : ""}${isPressed ? " thumbnail--expand" : ""}`}
+            className={`child-container thumbnail recent-route-thumbnail${isChecked ? " thumbnail--selected thumbnail--highlight" : ""}`}
             onMouseDown={() => handleMouseDown(t.name)}
             onMouseUp={() => handleMouseUp(t.name, folderUri)}
             onMouseLeave={handleMouseLeave}
@@ -72,12 +75,21 @@ export default function TimestampThumbnails({
             aria-pressed={isChecked}
             style={{ position: "relative" }}
           >
+            {/* Date section - fixed height at top */}
+            <div className="recent-route-text">
+              <p className="recent-route-date">
+                {label}
+              </p>
+            </div>
+            {/* Checkbox positioned absolutely */}
             <input
               type="checkbox"
               checked={isChecked}
               onChange={e => { e.stopPropagation(); onToggle(folderUri); }}
-              className="timestamp-checkbox"
+              className="recent-route-checkbox"
+              style={{display: "none"}}
             />
+            {/* Image container - fills remaining space */}
             <div className="thumbnail-image-container">
               <img
                 src={url}
@@ -89,10 +101,10 @@ export default function TimestampThumbnails({
                 }}
               />
             </div>
-            <div className="timestamp-label">{label}</div>
           </div>
         );
       })}
     </div>
+    </>
   );
 }

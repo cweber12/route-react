@@ -54,8 +54,13 @@ const Upload = ({ setVideoPath, setVideoUrl}) => {
   };
 
   return (
-      <div className="child-container child-container-column"> 
-        <p>From your device</p>       
+      <div 
+        className="child-container child-container-column" 
+        style={{
+          alignItems: "flex-start", 
+          padding: 0
+          
+          }}>        
         <label 
           htmlFor="video-upload" 
           className="button-label" 

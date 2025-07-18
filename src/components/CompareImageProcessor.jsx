@@ -15,13 +15,23 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const [imgDims, setImgDims] = useState({ width: 640, height: 360 });
   const [renderedImgDims, setRenderedImgDims] = useState({ width: 0, height: 0 });
   const [hover, setHover] = useState(false);
+  const userName = sessionStorage.getItem("userName");
+
+  // Add state for pose skeleton colors
+  const [lineColor, setLineColor] = useState("#64ff00"); // default: 100,255,0
+  const [pointColor, setPointColor] = useState("#0064ff"); // default: 0,100,255
+
+  // Add state for built-in image selection
+  const [selectedBuiltInImage, setSelectedBuiltInImage] = useState(null);
 
   const API = import.meta.env.VITE_API_BASE_URL_M;
   const imgRef = useRef(null);
+  const fileInputRef = React.useRef();
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     setImageFile(null);
+    setSelectedBuiltInImage(null);
     setVideoUrl("");
     setProcessedImage(false);
     setPreprocessSteps("");
@@ -34,7 +44,17 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     }
 
     setTimeout(() => {
-      setImageFile(file);
+      // Defensive: ensure file is not null and is a File object
+      if (file && file instanceof File) {
+        setImageFile(file);
+        setSelectedBuiltInImage(null); // Ensure built-in image is cleared only if a real file is set
+      } else {
+        setImageFile(null);
+      }
+      // Always reset the file input after processing
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
     }, 50);
   };
 
@@ -54,17 +74,39 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     }
   }, []);
 
+  // Helper to convert #RRGGBB to 'r,g,b'
+  function hexToRgbString(hex) {
+    if (!hex) return "0,0,0";
+    let c = hex.replace('#', '');
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const num = parseInt(c, 16);
+    return [
+      (num >> 16) & 255,
+      (num >> 8) & 255,
+      num & 255
+    ].join(',');
+  }
+
+  // Ensure color state resets on new image
+  React.useEffect(() => {
+    setLineColor("#64ff00");
+    setPointColor("#0064ff");
+  }, [imageFile]);
+
   const handleProcess = async () => {
-    if (!imageFile || !selectedS3PathArray || selectedS3PathArray.length === 0) {
+    if ((!imageFile && !selectedBuiltInImage) || !selectedS3PathArray || selectedS3PathArray.length === 0) {
       alert("Please select an image and at least one route attempt.");
       return;
     }
-
     const formData = new FormData();
-    formData.append("image", imageFile);
-    selectedS3PathArray.forEach((s3Path) => {
-      formData.append("s3_folders", s3Path.replace("s3://route-keypoints/", ""));
-    });
+    if (selectedBuiltInImage) {
+      formData.append("built_in_image", selectedBuiltInImage); // Pass S3 URI
+      formData.append("image", new Blob()); // Send empty file for compatibility
+    } else {
+      formData.append("built_in_image", "");
+      formData.append("image", imageFile);
+    }
+    console.log("imageFile passed to backend:", imageFile);
     formData.append("pose_lm_in", "");
     formData.append("sift_kp_in", "");
     formData.append("preprocess", preprocessImage ? "true" : "false");
@@ -72,19 +114,20 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     formData.append("sift_right", siftRight);
     formData.append("sift_up", siftUp);
     formData.append("sift_down", siftDown);
-
+    formData.append("line_color", hexToRgbString(lineColor));
+    formData.append("point_color", hexToRgbString(pointColor));
+    selectedS3PathArray.forEach((s3Path) => {
+      formData.append("s3_folders", s3Path.replace("s3://route-keypoints/", ""));
+    });
     setProcessing(true);
-
     try {
       const res = await fetch(`${API}/api/compare-image`, {
         method: "POST",
         body: formData,
       });
-
       if (!res.ok) throw new Error("Failed to process image.");
       const data = await res.json();
-
-      setVideoUrl(`${API}${data.video_url}`);
+      setVideoUrl(`${API}${data.video_url}?t=${Date.now()}`);
       setPreprocessSteps(data.steps || "");
       setProcessedImage(true);
     } catch (err) {
@@ -95,85 +138,99 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     }
   };
 
-  const handleCompareMultiple = async () => {
-    if (!imageFile || !selectedS3PathArray || selectedS3PathArray.length < 2) {
-      alert("Please select an image and at least two route attempts.");
-      return;
+  // Handler for built-in image selection
+  const handleBuiltInImageSelect = (e) => {
+    const s3Uri = e.target.value;
+    if (!s3Uri) return;
+    setSelectedBuiltInImage(s3Uri);
+    setImageFile(null);
+    setVideoUrl("");
+    setProcessedImage(false);
+    setPreprocessSteps("");
+    // Always reset the file input when switching to built-in image
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
     }
-
-    const formData = new FormData();
-    formData.append("image", imageFile);
-    selectedS3PathArray.forEach((s3Path) => {
-      formData.append("s3_folders", s3Path.replace("s3://route-keypoints/", ""));
-    });
-    formData.append("compare_multiple", "true");
-    formData.append("preprocess", preprocessImage ? "true" : "false");
-    formData.append("sift_left", siftLeft);
-    formData.append("sift_right", siftRight);
-    formData.append("sift_up", siftUp);
-    formData.append("sift_down", siftDown);
-
-    setProcessing(true);
-
-    try {
-      const res = await fetch(`${API}/api/compare-image-multi-cropped`, {
-        method: "POST",
-        body: formData,
+    setTimeout(() => {
+      setImageFile({
+        name: s3Uri.split('/').pop(),
+        s3Uri,
+        type: 'image/jpeg',
+        isS3: true
       });
-
-      if (!res.ok) throw new Error("Failed to compare attempts.");
-      const data = await res.json();
-
-      setVideoUrl(`${API}${data.video_url}`);
-      setPreprocessSteps(data.steps || "");
-      setProcessedImage(true);
-    } catch (err) {
-      console.error("Error comparing attempts:", err);
-      alert("Error comparing attempts.");
-    } finally {
-      setProcessing(false);
-    }
+    }, 0);
   };
 
-
   // Helper for image preview URL
-  const imageUrl = imageFile ? URL.createObjectURL(imageFile) : null;
+  const imageUrl = imageFile
+    ? imageFile.s3Uri
+      ? `https://route-keypoints.s3.amazonaws.com/sample-images/${imageFile.name}`
+      : URL.createObjectURL(imageFile)
+    : null;
 
-  // Add a useEffect to update renderedImgDims on window resize
+  // Polling state for video availability
+  const [videoReady, setVideoReady] = useState(false);
+  const pollIntervalRef = useRef(null);
+
+  // Helper to poll for video availability
+  const pollForVideo = useCallback((url) => {
+    setVideoReady(false);
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(url, { method: 'HEAD' });
+        if (res.ok) {
+          setVideoReady(true);
+          clearInterval(pollIntervalRef.current);
+        }
+      } catch (e) {
+        // ignore, keep polling
+      }
+    }, 2000); // poll every 2 seconds
+  }, []);
+
+  // When videoUrl changes, start polling
   React.useEffect(() => {
-    window.addEventListener('resize', handleRenderedImgResize);
-    return () => window.removeEventListener('resize', handleRenderedImgResize);
-  }, [handleRenderedImgResize]);
+    if (videoUrl) {
+      pollForVideo(videoUrl);
+    } else {
+      setVideoReady(false);
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    }
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, [videoUrl, pollForVideo]);
 
   return (
    <>
       {videoUrl && (
-
+        videoReady ? (
           <video 
             className="media" 
-            style={{ width: "100%", height: "auto", maxHeight: "500px", display: "block" }}
+            style={{ width: "100%", height: "auto", maxHeight: "500px"}}
             controls 
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-
+        ) : (
+          <div 
+            style={{
+              color: '#c6ff1d', 
+              fontSize: 20, 
+              padding: 0, 
+              textAlign: 'center', 
+              fontFamily: 'Courier New, monospace',
+              }}>
+            Processing video, please wait...
+          </div>
+        )
       )}
-  
-
      
       {/* SIFT sliders and image preview */}
       {imageFile && !videoUrl && (
-        <div 
-        style={{ 
-          padding: "50px 20px 20px 50px", 
-          background: "rgba(0,0,0,0.3)",
-          borderRadius: "0 4px 4px 0", 
-          borderTop: "1px solid #333",
-          borderRight: "1px solid #333",
-          borderBottom: "1px solid #333",
-          }}
-          >
+        <div className="compare-image-preview-container">
           <div style={{ position: "relative", maxWidth: 500, margin: "0" }}>
             <img
               ref={imgRef}
@@ -349,45 +406,76 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           </div>
         </div>
       )}
+       {/* Color selectors for pose skeleton */}
+       {imageFile && !videoUrl && (
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center', margin: '0', justifyContent: 'flex-start' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontWeight: 500, color: '#c6ff1d' }}>Line Color:</span>
+            <input
+              type="color"
+              value={lineColor}
+              onChange={e => setLineColor(e.target.value)}
+              style={{ width: 32, height: 32, border: 'none', background: 'none', cursor: 'pointer' }}
+              title="Select pose skeleton line color"
+            />
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontWeight: 500, color: '#c6ff1d' }}>Point Color:</span>
+            <input
+              type="color"
+              value={pointColor}
+              onChange={e => setPointColor(e.target.value)}
+              style={{ width: 32, height: 32, border: 'none', background: 'none', cursor: 'pointer' }}
+              title="Select pose skeleton point color"
+            />
+          </label>
+        </div>
+      )}
        {/* Buttons row, 20px below video */}
-      <div
-        className="parent-container parent-container-row"
-        style={{justifyContent: "flex-start"  }}
-      >
-        <label 
-          htmlFor="image-upload" 
-          className="button-label"
+      {selectedS3PathArray && selectedS3PathArray.length > 0 && (
+        <div
+          className="parent-container parent-container-row"
+          style={{justifyContent: "flex-start", alignItems: "flex-start"}}
         >
-          Select an Image
-        </label>
-        <input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-        <button 
-          onClick={handleProcess} 
-          disabled={processing || !imageFile}
-          className={processing ? "processing process-button" : "process-button"}
-        >
-          Process & View
-        </button>
-
-        {/* Show Compare Multiple only if multiple thumbnails are selected */}
-        {selectedS3PathArray && selectedS3PathArray.length > 1 && (
-          <button
-            className="process-button"
-            onClick={handleCompareMultiple}
-            disabled={processing || !imageFile}
+          <div className="child-container child-container-column" style={{ gap: "20px", alignItems: "flex-start" }}>
+          {/* Existing Image Files button */}
+          <label 
+            htmlFor="image-upload" 
+            className="button-label"
           >
-            Compare Multiple
+            Image Files
+          </label>
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+            ref={fileInputRef}
+          />
+          {userName == "Demo" && (
+          <select
+            id="built-in-image-select"
+            value={selectedBuiltInImage || ""}
+            onChange={handleBuiltInImageSelect}
+            style={{padding: "6px 12px", borderRadius: 4, fontSize: 16 }}
+          >
+            <option value="">Select a sample image...</option>
+            <option value="s3://route-keypoints/sample-images/KingAir.jpg">KingAir.jpg</option>
+            <option value="s3://route-keypoints/sample-images/Bloodline.jpg">Bloodline.jpg</option>
+            <option value="s3://route-keypoints/sample-images/AScannerDarkly.jpg">AScannerDarkly.jpg</option>
+          </select>
+          )}
+          </div>
+          <button 
+            onClick={handleProcess} 
+            disabled={processing || (!imageFile && !selectedBuiltInImage)}
+            className={processing ? "processing process-button" : "process-button"}
+          >
+            Scan Image
           </button>
-        )}
-      </div>
-
-
+        </div>
+      )}
     </>
   );
 };

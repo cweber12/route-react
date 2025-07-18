@@ -17,8 +17,10 @@ const UploadVideo = () => {
   const [showS3Upload, setShowS3Upload] = useState(true);
   const [videoUrl, setVideoUrl] = useState(null);
   const [autoRefFramePath, setAutoRefFramePath] = useState(null);
-
+  const [showCropInfo, setShowCropInfo] = useState(false);
+  const [showProcessInfo, setShowProcessInfo] = useState(false);
   // --- STATIC SIFT BOX STATE (do not change this logic) ---
+
   const [showSiftSliders, setShowSiftSliders] = useState(false);
   const [siftLeft, setSiftLeft] = useState(20);
   const [siftRight, setSiftRight] = useState(20);
@@ -68,53 +70,85 @@ const UploadVideo = () => {
   return (
     <>
 
-    
     <div className="page-container">
         
       {!videoPath && (
         <>
-        <h1 className="upload-title">Upload a Video</h1>
-      <div 
-      className="parent-container parent-container-row"
-      style={{
-        padding: "20px", 
-        background: "rgba(0, 0, 0, 0.5)", 
-        borderRadius: "0 0 4px 4px",
-        color: "#ccc", 
-      
-      }}
-      
-      >
+        <div 
+        className="parent-container parent-container-column" 
+        style={{ 
+          width: '100%', 
+          alignItems: 'flex-start', 
+          justifyContent: 'center',
+          color: "white"
+          }}>
+        <p style={{margin: 0, fontSize: 20}}>Upload from your device</p>
         <Upload setVideoPath={setVideoPath} setVideoUrl={setVideoUrl} />
+        <p style={{margin: 0, fontSize: 20}}>
+          Find a video on YouTube
+          <a
+            href="https://www.youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
+            <img 
+              src="/assets/link.png" 
+              alt="YouTube Link" 
+              style={{ width: 20, height: 20, marginLeft: 10 }}
+            />
+          </a>
+
+        </p>
         <DownloadYouTube
           onDownloadComplete={(path) => {
             setVideoPath(path);
           }}
           setVideoUrl={setVideoUrl}
         />
-      </div>
+        </div>
+
       </>
       )}
       { videoPath && (
         <>
-        <h1 className="upload-title">SCAN ROUTE PROGRESSION</h1>
-                
-        <div 
-            className="parent-container parent-container-row" 
-            style={{ 
-              width: '100%', 
-              alignItems: 'center',
-              justifyCOntent: "flex-start", 
-              marginTop: -10, 
-              background:  "rgba(80, 8, 18, 0.2)",
-              padding: "10px", 
-              borderRadius: "4px",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+          <div 
+          className="parent-container parent-container-row"
+          style={{alignItems: "center"}}
+          
+          >
+          <h2 className="page-header" style={{width: "100%"}}>Set Detection Areas
+          <img
+            src="/assets/info.png"
+            alt="Crop Info"
+            onClick={() => setShowCropInfo(!showCropInfo)}
+            className="info-icon"
+            style={{marginLeft: "20px"}}
+          />
+          </h2>
+          </div>
+          {showCropInfo && (
+            <div style={{maxWidth: "600px"}}>
+              <p style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                Use the sliders to adjust the detection areas for the video.
+              </p>
+              <p style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                <strong>Crop Route: </strong>
+                Adjust the sliders to define where background features are detected. The crop 
+                should only contain rock features for the route and should exclude features like 
+                trees, ground, or sky.
+              </p>
+              <p style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                <strong>Crop Climber: </strong> 
+                Adjust the sliders to define the area where climber is detected.
+                It should be set to contain the climbers entire body in the current position 
+                and the next 1-2 moves.
+              </p>
 
-              
-              
-              }}>
+            </div>
+          )}
 
+          <div 
+            className="parent-container parent-container-row">
                 <button
                   onClick={() => setEditMode('sift')}
                   style={{
@@ -174,22 +208,30 @@ const UploadVideo = () => {
               </div>
         <div className="parent-container parent-container-row" style={{ width: "100%", alignItems: "flex-start", justifyContent: "center", gap: 20 }}>
           {/* Video, SVG, sliders column */}
-          <div className="parent-container parent-container-column" style={{ alignItems: 'center', flex: 1, width: '100%' }}>
-            
+          <div 
+          className="parent-container parent-container-column" 
+          style={{ 
+            alignItems: 'flex-start', 
+            flex: 1, 
+            width: '100%'
+            }}>
+
             {videoUrl && (
               <>
               
               <div 
               style={{ 
                 padding: "50px 20px 20px 50px", 
-                background: 'rgba(0,0,0,0.3)', 
-                borderRadius: 4, display: 'flex', 
+                background: "linear-gradient(90deg, rgb(11, 29, 40), rgba(11, 29, 40, 0.5))",
+                display: 'flex', 
                 justifyContent: 'center', 
                 alignItems: 'flex-start', 
                 width: 'auto', 
-                boxSizing: 'border-box', 
-                border: '1px solid rgba(0, 0, 0, 0.9)',
+                boxSizing: 'border-box',
+                borderRadius: 4,
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+
+    
 
                 }}
                 >
@@ -303,11 +345,11 @@ const UploadVideo = () => {
                     style={{
                       pointerEvents: "auto",
                       position: "absolute",
-                      top: -10,
+                      top: -12,
                       left: 0,
                       width: "100%",
                       height: 8,
-                      zIndex: 30,
+      
                     }}
                   />
                   <input
@@ -338,11 +380,11 @@ const UploadVideo = () => {
                     style={{
                       pointerEvents: "auto",
                       position: "absolute",
-                      top: -25,
+                      top: -30,
                       left: 0,
                       width: "100%",
                       height: 8,
-                      zIndex: 30,
+           
                     }}
                   />
                 </div>
@@ -388,11 +430,11 @@ const UploadVideo = () => {
                     style={{
                       pointerEvents: "auto",
                       position: "absolute",
-                      top: 20,
+                      top: 25,
                       left: 0,
                       width: renderedVideoHeight, // THIS SCALES WITH VIDEO
                       height: 8,
-                      zIndex: 30,
+     
                     }}
                   />
                   <input
@@ -423,7 +465,7 @@ const UploadVideo = () => {
                     style={{
                       pointerEvents: "auto",
                       position: "absolute",
-                      top: 5,
+                      top: 7,
                       left: 0,
                       width: renderedVideoHeight, // THIS SCALES WITH VIDEO
                       height: 8,
@@ -440,9 +482,53 @@ const UploadVideo = () => {
             </div>
           </div>
 
-      
-      {/* ExtractPose on top of video/annotation UI */}
-           
+      <h2 className="page-header" style={{width: "100%"}}>Scan Video
+          <img
+            src="/assets/info.png"
+            alt="Crop Info"
+            onClick={() => setShowProcessInfo(!showProcessInfo)}
+            className="info-icon"
+            style={{marginLeft: "20px"}}
+          />
+          </h2>
+          {showProcessInfo && (
+            <div style={{maxWidth: "600px"}}>
+              <p
+              style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                Select the pose detection model
+              </p>
+              <ul style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                <li>MediaPipe Lite: Fast, but less accurate. Good for videos where the climber is close to the camera.</li>
+                <li>MediaPipe Full: Slower, but more accurate. Best for videos with climbers at various distances.</li>
+                <li>MediaPipe Heavy: Very accurate, but requires more processing power. Use for high quality videos.</li>
+              </ul>
+              <p 
+              style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                Click the settings button for additional adjustment options.
+              </p>
+              <ul style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
+                <li>Detection Rate: Process every N frames</li>
+                <li>Detected Features: Number of Background features detected. Increases accuracy and memory use</li>
+                <li>Enhance Contrast: Implements 
+                  <a href="https://docs.opencv.org/4.x/d5/daf/tutorial_py_histogram_equalization.html">
+                    Contrast Limited Histogram Equalization
+                  </a>
+                </li>
+                <li>Sharpen: Applies a
+                  <a href="https://medium.com/@boelsmaxence/introduction-to-image-processing-filters-179607f9824a">
+                    sharpening filter
+                  </a>
+                  to enhance edges.</li>
+                  <li>Adjust Brightness: Adjusts
+                    <a href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">
+                    gamma correction
+                    </a>.
+                  </li>
+              </ul>
+            </div>
+          )}
+          {/* ExtractPose on top of video/annotation UI */}
+
               <ExtractPose
                 videoPath={videoPath}
                 userName={userName}
@@ -485,7 +571,7 @@ const UploadVideo = () => {
         />
       )}
       {poseFilePath && siftFilePath && !loading && showS3Upload && (
-        <div className="parent-container parent-container-column" style={{ width: '100%', alignItems: 'flex-start', padding: '20px 0' }}>
+        <div className="parent-container parent-container-column" >
           <UploadToS3
             poseFilePath={poseFilePath}
             siftFilePath={siftFilePath}

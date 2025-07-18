@@ -51,7 +51,7 @@ export default function S3AreaNavigator({
               const parentPrefix = grandparentPath.join("/");
               handleSelectPath(parentPrefix);
             }}
-            style={{ color: "#3fa2f6", textDecoration: "none", marginRight: 12 }}
+            style={{ color: "#c6ff1d", textDecoration: "none", marginRight: 12 }}
           >
             ← Back
           </a>
@@ -78,7 +78,7 @@ export default function S3AreaNavigator({
                     fontWeight: "550",
                     display: "flex",
                     alignItems: "center",
-                    color: n.type === "route" ? "#f57c00" : "#3fa2f6",
+                    color: n.type === "route" ? "#f57c00" : "#c6ff1d",
                     cursor: "pointer",
                   }}
                 >

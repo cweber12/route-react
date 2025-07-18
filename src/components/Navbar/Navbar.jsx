@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Nav, NavTop, NavBottom, NavLink, NavMenu, UserIconContainer } from "./NavbarElements";
+import { Nav, NavLink, UserIconContainer, MenuIcon } from "./NavbarElements";
+import styled from "styled-components";
 import { useNavigate, useLocation } from 'react-router-dom'; 
+
+// Styled menu icon for consistency
+
 
 const Navbar = ({ isLoggedIn, onLogout }) => {
   const userName = sessionStorage.getItem("userName");
   const navigate = useNavigate();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isUploadApiAvailable, setIsUploadApiAvailable] = useState(true);
   const dropdownRef = useRef(null);
   const userIconRef = useRef(null);
+  const [displayOptions, setDisplayOptions] = useState(false);
   
   const API = import.meta.env.VITE_API_BASE_URL_M;
   
@@ -31,6 +37,21 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  useEffect(() => {
+    // Check connection to VITE_API_BASE_URL_P
+    const uploadApiUrl = import.meta.env.VITE_API_BASE_URL_P;
+    if (!uploadApiUrl) {
+      setIsUploadApiAvailable(false);
+      return;
+    }
+    fetch(`${uploadApiUrl}/api/health`, { method: 'GET' })
+      .then(res => {
+        if (!res.ok) throw new Error('No connection');
+        setIsUploadApiAvailable(true);
+      })
+      .catch(() => setIsUploadApiAvailable(false));
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -61,7 +82,49 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
       {isLoggedIn && (
         <Nav>
           {/* Top section - User icon in upper right */}
-          <NavTop>
+
+            {/* Use a regular <img> tag for troubleshooting */}
+              <MenuIcon
+                src="/assets/menu.png"
+                alt="Menu Icon"
+                onClick={() => setDisplayOptions(!displayOptions)}
+              />
+              {/* Dropdown menu for navigation links */}
+              {displayOptions && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: "0",
+                    background: "rgba(9, 22, 29, 0.98)",
+                    borderRadius: "0 0 4px 4px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    padding: "20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    zIndex: 1002,
+                    minWidth: "180px"
+                  }}
+                >
+                  <NavLink 
+                    to="/upload-video" 
+                    className={location.pathname === "/upload-video" ? "active-link" : ""}
+                    onClick={handlePageChange}
+                    style={!isUploadApiAvailable ? { pointerEvents: 'none', opacity: 0.5, cursor: 'not-allowed' } : {}}
+                    disabled={!isUploadApiAvailable}
+                  >
+                    UPLOAD A VIDEO
+                  </NavLink>
+                  <NavLink 
+                    to="/route-data" 
+                    className={location.pathname === "/route-data" ? "active-link" : ""}
+                    onClick={handlePageChange}
+                  >
+                    AREAS & ROUTES
+                  </NavLink>
+                </div>
+              )}
             <UserIconContainer>
               <div 
                 ref={userIconRef}
@@ -130,27 +193,9 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                 </div>
               )}
             </UserIconContainer>
-          </NavTop>
 
           {/* Bottom section - Navigation links */}
-          <NavBottom>
-            <NavMenu>
-              <NavLink 
-                to="/upload-video" 
-                className={location.pathname === "/upload-video" ? "active-link" : ""}
-                onClick={handlePageChange}
-              >
-                UPLOAD A VIDEO
-              </NavLink>
-              <NavLink 
-                to="/route-data" 
-                className={location.pathname === "/route-data" ? "active-link" : ""}
-                onClick={handlePageChange}
-              >
-                AREAS & ROUTES
-              </NavLink>
-            </NavMenu>
-          </NavBottom>
+          
         </Nav>
       )}
     </>

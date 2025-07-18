@@ -15,22 +15,16 @@ const DownloadYouTube = ({ onDownloadComplete, setVideoUrl }) => {
       setStatus("Please enter a valid YouTube URL.");
       return;
     }
-
-    setStatus("Downloading...");
-    setDownloading(true);
-
+    setDownloading(true);   
     const formData = new FormData();
     formData.append("url", url);
-    formData.append("resolution", highRes ? 1080 : 720); // send 1080 if checked
-
+    formData.append("resolution", highRes ? 1080 : 720); // send 1080 if checked   
     try {
       const res = await fetch(`${API}/api/download-youtube`, {
         method: "POST",
         body: formData,
       });
-
       const data = await res.json();
-
       if (res.ok) {
         setStatus("Download complete.");
         onDownloadComplete(data.file_path); 
@@ -59,57 +53,32 @@ const DownloadYouTube = ({ onDownloadComplete, setVideoUrl }) => {
   };
 
   return (
-    <div 
-    className="child-container child-container-column"
-    > 
-      <p
-                style={{
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: "5px", 
-                  textWrap: "wrap", 
-                }}
-              >
-                From
-                <a
-                  href="https://www.youtube.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                > 
-                  YouTube
-                </a>
-              </p>
+    <>
       <input
-      className="text-input"
+        className="text-input"
         type="text"
         value={url}
         onChange={handleInputChange}
-        placeholder="Paste YouTube video URL"
-        style={{width: "250px", fontSize: "16px"}}
+        placeholder=" Paste YouTube video URL"
+        style={{
+          width: "285px", 
+          fontSize: "18px", 
+          padding: 0, 
+        }}
       />
       
-      {showDownload && !downloading && url.trim() !== "" && (
+      {showDownload && url.trim() !== "" && (
         <>
-        <button onClick={handleDownload}
-        className={downloading ? "processing process-button" : "process-button"}>
-          {downloading ? "Downloading..." : "Download Video"}
-          
-          </button>
-          <div style={{margin: "0", display: "flex", alignItems: "center", gap: 8}}>
-        <input
-          type="checkbox"
-          id="highResCheckbox"
-          checked={highRes}
-          onChange={e => setHighRes(e.target.checked)}
-          style={{marginRight: 4}}
-        />
-        <label htmlFor="highResCheckbox" style={{userSelect: "none", fontSize: 15}}>
-          High Resolution (1080p)
-        </label>
-      </div>
+          <button 
+            onClick={handleDownload}
+            className={downloading ? "processing process-button" : "process-button"}
+            disabled={downloading}
+          >
+            {downloading ? "Downloading..." : "Download Video"}  
+          </button>       
         </>
       )}
-    </div>
+    </>
   );
 };
 

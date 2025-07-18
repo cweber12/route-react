@@ -24,43 +24,30 @@ const RecentRoutes = () => {
     if (userName) fetchRecent();
   }, [userName]);
 
+  // Only allow one checked attempt at a time
   const toggleAttempt = (fullPath) => {
     setCheckedAttempts((prev) =>
-      prev.includes(fullPath) ? prev.filter((p) => p !== fullPath) : [...prev, fullPath]
+      prev.includes(fullPath) ? [] : [fullPath]
     );
-  };
-
-  // Extract coordinates from recent attempts for map pins
-  const getCoordinatesFromAttempts = () => {
-    return recentAttempts
-      .filter(attempt => attempt.latitude && attempt.longitude) // Only attempts with coordinates
-      .map(attempt => ({
-        latitude: attempt.latitude,
-        longitude: attempt.longitude,
-        name: attempt.route_name,
-        path: `${attempt.basePath}`, // Use basePath for routing
-      }));
-  };
-
-  const handlePinClick = (routePath) => {
-    // Optional: Navigate to that route or highlight attempts for that route
-    console.log("Pin clicked for route:", routePath);
   };
 
   // Remove expanded state, use local state for press/expand effect
   const [pressed, setPressed] = useState(null);
+  const [highlighted, setHighlighted] = useState(null);
 
   // Helper to detect mobile (max-width: 480px)
   const isMobile = () => window.matchMedia && window.matchMedia("(max-width: 480px)").matches;
 
-  // On mouse down, expand the card visually (desktop only)
+  // On mouse down, trigger highlight animation (desktop only)
   const handleMouseDown = (fullPath) => {
     if (!isMobile()) setPressed(fullPath);
   };
-  // On mouse up, toggle selection and remove expand effect
+  // On mouse up, toggle selection and trigger highlight
   const handleMouseUp = (fullPath) => {
     if (!isMobile()) setPressed(null);
+    setHighlighted(fullPath);
     toggleAttempt(fullPath);
+    setTimeout(() => setHighlighted(null), 400); // duration matches animation
   };
   // On mouse leave, remove expand effect
   const handleMouseLeave = () => {
@@ -70,8 +57,16 @@ const RecentRoutes = () => {
   return (
     <>
       <CompareImageProcessor selectedS3PathArray={checkedAttempts} />
-
-      <div className="parent-container parent-container-row" style={{justifyContent: "flex-start"}}>
+      <h2 
+      className="div-header"
+      >Recent Routes</h2>
+      <div 
+      className="parent-container parent-container-row" 
+      style={{
+        justifyContent: "flex-start",
+        width: "fit-content", 
+        marginBottom: "24px",
+        }}>
         {recentAttempts.map((attempt) => {
           const rawPath = `${attempt.basePath}/${attempt.timestamp}/route_image.jpg`;
           const encodedPath = encodeURIComponent(rawPath).replace(/%2F/g, "/");
@@ -84,7 +79,7 @@ const RecentRoutes = () => {
           return (
             <div
               key={fullPath}
-              className={`child-container thumbnail recent-route-thumbnail${isChecked ? " thumbnail--selected" : ""}${isPressed ? " thumbnail--expand" : ""}`}
+              className={`child-container thumbnail recent-route-thumbnail${isChecked ? " thumbnail--selected thumbnail--highlight" : ""}`}
               onMouseDown={() => handleMouseDown(fullPath)}
               onMouseUp={() => handleMouseUp(fullPath)}
               onMouseLeave={handleMouseLeave}
@@ -111,6 +106,7 @@ const RecentRoutes = () => {
                 checked={isChecked}
                 onChange={e => { e.stopPropagation(); toggleAttempt(fullPath); }}
                 className="recent-route-checkbox"
+                style={{display: "none"}}
               />
               {/* Image container - fills remaining space */}
               <div className="thumbnail-image-container">

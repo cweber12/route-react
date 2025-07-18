@@ -15,42 +15,33 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
 
     return (
       <>
-      <div className="parallax-bg" ></div>
       <div className="home">
         <h1 className="title">RouteScan</h1>
         
           <div className="login" >
-              <h1 style={{fontWeight: "500"}} >
-                {viewRegistration ? "Register" : "Login"} 
-              </h1>
+      
               {viewRegistration && <RegistrationForm />}
               {viewLogin && <LoginForm onLogin={() => setIsLoggedIn(true)} />}
 
               {viewRegistration && (
-                <p style={{width: "220px"}}>
-                  Already have an account?{" "}
                   <span 
                   onClick={() => {
                     setViewRegistration(false);
                     setViewLogin(true);
                   }} 
-                  style={{ color: "#a9c52f", cursor: "pointer", textDecoration: "underline" }}>
+                  style={{ color: "#e4ff92", cursor: "pointer", textDecoration: "underline" }}>
                     Login
                   </span>
-                </p>
               )}
               {viewLogin && (
-                <p style={{width: "220px"}}>
-                  Don't have an account?{" "}
                   <span 
                     onClick={() => {
                       setViewRegistration(true);
                       setViewLogin(false);
                     }} 
-                    style={{ color: "#a9c52f", cursor: "pointer", textDecoration: "underline" }}>
+                    style={{ color: "#e4ff92", cursor: "pointer", fontSize: 22}}>
                     Register
                   </span>
-                </p>
               )}
             </div>
 

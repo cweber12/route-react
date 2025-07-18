@@ -63,3 +63,9 @@ scp -i "C:\Projects\RouteMap\route-map-server.pem" -r C:\Projects\routemap-ec2\f
 
 ### PUSH TO S3
 aws s3 sync .\dist\ s3://your-s3-bucket-name/ --delete
+
+
+### DEMO LOGIN
+
+Username: Demo
+Password: RouteScan12345

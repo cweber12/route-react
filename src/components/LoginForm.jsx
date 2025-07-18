@@ -28,16 +28,17 @@ export default function LoginForm({ onLogin }) {
 
   return (    
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <div className="child-container child-container-column" >
+        <div className="child-container child-container-column"
+        style={{padding: 0}} >
           <input 
-          style={{width: "100%", height: "30px", fontSize: "18px", border: "1px solid #ccc", borderRadius: "4px"}}
+          style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}}
           name="username" onChange={handleChange} placeholder="Username" required />
           <input
-          style={{width: "100%", height: "30px", fontSize: "18px", border: "1px solid #ccc", borderRadius: "4px"}} 
+          style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}} 
           name="password" onChange={handleChange} type="password" placeholder="Password" required />
           <button 
           type="submit"
-          style={{width: "100%"}}
+          style={{width: "100%", fontSize: "22px"}}
           >Login</button>
           <p>{message}</p>
       </div>

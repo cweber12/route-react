@@ -95,8 +95,10 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
     style={{
       alignItems: "center", 
       gap: 0,
-      backgroundColor: "rgba(48, 6, 6, 0.3)",
+      background: "linear-gradient(90deg, rgb(11, 29, 40), rgba(11, 29, 40, 0.5))",
       paddingTop: "20px",
+      borderRadius: "4px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
     
     }}
     >
@@ -116,8 +118,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         gap: "20px", 
         alignItems: "center", 
         justifyContent: "center",
-        backgroundColor: "rgba(24, 21, 21, 0.3)",
-        borderRadius: "0 0 4px 4px",
         padding: "20px",
         alignSelf: "center",
         width: "100%",
@@ -131,7 +131,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         style={{
           width: "30px", 
           height: "30px", 
-          background:  "#e4ff92",
+          background:  "#c6ff1d",
           borderRadius: "25%",
         
         }}
@@ -145,7 +145,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         style={{
           width: "30px", 
           height: "30px", 
-          background:  "#e4ff92",
+          background:  "#c6ff1d",
           borderRadius: "25%",
         
         }} 
@@ -174,8 +174,9 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         disabled={omitting}
         > Omit Frames  </button>
    
-          <p>: {omitFrames.join(", ")}</p>
+          
         </span>
+        <p style={{color: "white"}}>Omitted Frames: {omitFrames.join(", ")}</p>
         </>
         
       )}

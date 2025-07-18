@@ -172,75 +172,66 @@ const ViewRouteData = () => {
     // Otherwise, render sub-areas/routes
     return (
       <>
+      <div 
+        className="parent-container parent-container-column"
+        style={{ width: "100%", gap: "10px", margin: 0, alignItems: "flex-start" }}
+      >
+         <div className="area-navigator-header-row">
         {selectionPath.length === 0 && (
-          <h3
-          style={{
-            margin: "-20px -20px 10px -20px", 
-            padding: "10px 20px", 
-            color: "rgb(228, 255, 146)",
-            backgroundColor: "linear-gradient (180deg, rgba(48, 6, 6, 0.6), rgba(0,0,0,0)",
-            textDecoration: "underline",
-            fontWeight: "520",
+         
+            <h3 className="area-navigator-header">All Areas</h3>
           
-          }}
-          
-          >ALL AREAS</h3>
+        )}
+        {currentName && (
+          <h3 className="area-navigator-header">{currentName}</h3>
         )}
         
-        {currentName && (
-          <h3
-          style={{
-            margin: "-20px -20px 10px -20px", 
-            padding: "10px 20px", 
-            color: "rgb(228, 255, 146)",
-            backgroundColor: "linear-gradient (180deg, rgba(48, 6, 6, 0.6), rgba(0,0,0,0)",
-            textDecoration: "underline",
-            fontWeight: "520",
-          
-          }}
-          
-          >{currentName.toUpperCase()}</h3>
-        )}
+        </div>
+
+        
+      </div>
 
         {(currentNode ? currentNode.children : treeData)?.map((node) => {
-          const nodeType = inferNodeType(node);
-          return (
-            <>
-              <span
-             
-                className={`area-navigator-item${nodeType === "route" ? " area-navigator-route" : ""}`}
-                onClick={async () => {
-                  const newPath = [...selectionPath, node.name];
-                  const cleanPath = [userName, ...newPath].join("/");
-                  setSelectionPath(newPath);
+            const nodeType = inferNodeType(node);
+            return (
+              <>
+              {node.name === "location_tree.json" ? null : (
+                <span
+                  className={`area-navigator-item${nodeType === "route" ? " area-navigator-route" : ""}`}
+                  onClick={async () => {
+                    const newPath = [...selectionPath, node.name];
+                    const cleanPath = [userName, ...newPath].join("/");
+                    setSelectionPath(newPath);
 
-                  if (nodeType === "route") {
-                    setCheckedTimestamps([]);
-                    setSelectedRouteInfo({
-                      name: node.name,
-                      basePath: cleanPath,
-                    });
-                    const ts = await fetchTimestampsForRoute(cleanPath);
-                    setTimestamps(ts);
-                  } else {
-                    setCheckedTimestamps([]);
-                    setSelectedRouteInfo(null);
-                    setTimestamps([]);
-                  }
-                }}
-              >
-              {nodeType === "route" && (
-                <img 
-                  src="public\assets\route_icon.jpg"
-                  alt="Route Icon"
-                  className="area-navigator-route-icon"
-                />
+                    if (nodeType === "route") {
+                      setCheckedTimestamps([]);
+                      setSelectedRouteInfo({
+                        name: node.name,
+                        basePath: cleanPath,
+                      });
+                      const ts = await fetchTimestampsForRoute(cleanPath);
+                      setTimestamps(ts);
+                    } else {
+                      setCheckedTimestamps([]);
+                      setSelectedRouteInfo(null);
+                      setTimestamps([]);
+                    }
+                  }}
+                >
+                {nodeType === "route" && (
+                  <img 
+                    src="public\assets\route_icon.jpg"
+                    alt="Route Icon"
+                    className="area-navigator-route-icon"
+                  />
+                )}
+                  {node.name == "location_tree.json" ? "" : `${node.name}`}
+                </span>
               )}
-                {node.name}
-              </span>
-            </>
-          );
-        })}
+              </>
+            );
+          })}
+  
       </>
     );
   };
@@ -303,65 +294,84 @@ const ViewRouteData = () => {
     <>
       <div 
       className="page-container" 
+      style={{background: "none", border: "none", padding: 0, margin: 0}}
       >
 
-          {/* Search Bar and Previous Area Button */}
-          <div className="search-container">
-            {/* Search Bar */}
-            <div className="search-bar">
-              <input
-                type="text"
-                placeholder="Search area or route..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="search-input"
-                onFocus={() => searchQuery && setShowSuggestions(true)}
-                disabled={showCompareForRecent}
-              />
-              {showSuggestions && searchResults.length > 0 && !showCompareForRecent && (
-                <ul className="search-suggestions">
-                  {searchResults.map((node, idx) => (
-                    <li
-                      key={idx}
-                      className={`search-suggestion-item ${node.type}`}
-                      onMouseDown={() => handleSuggestionClick(node)}
-                    >
-                      {node.name} <span className="search-suggestion-type">({node.type})</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            {/* Previous Area Button or Placeholder */}
-            {selectionPath.length > 0 && !showCompareForRecent ? (
-              <button
-                className="prev-area-button"
-                onClick={() => {
-                  if (selectionPath.length === 1) {
-                    setSelectionPath([]);
-                    setCheckedTimestamps([]);
-                    setSelectedRouteInfo(null);
-                    setTimestamps([]);
-                  } else {
-                    setSelectionPath(selectionPath.slice(0, -1));
-                    setCheckedTimestamps([]);
-                    setSelectedRouteInfo(null);
-                    setTimestamps([]);
-                  }
-                }}
-              >
-                ← {selectionPath.length === 1 ? "All Areas" : selectionPath[selectionPath.length - 2]}
-              </button>
-            ) : (
-              <div style={{ width: "100%" }} />
-            )}
-          </div>
-
           {/* Main Content Logic */}
+          {/* Show Area Navigator/Map and RecentRoutes on initial load */}
+          {(!selectedRouteInfo && areaRoutes.length === 0 && !showCompareForRecent) && (
+            <>
+            <h2 className="page-header">Saved Routes</h2>
+              
+                {treeData.length > 0 && (
+                  <>
+                    {/* Search Bar under Saved Climbs, with Previous Area button to the right */}
+                    <div className="search-container">
+                      <div className="search-bar" style={{flex: 1}}>
+                        <input
+                          className="search-input"
+                          type="text"
+                          placeholder="Search routes or areas..."
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          onFocus={() => setShowSuggestions(true)}
+                          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                          style={{fontSize: 18}}
+                        />
+                        {showSuggestions && searchResults.length > 0 && (
+                          <ul className="search-suggestions">
+                            {searchResults.map((result, idx) => (
+                              <li
+                                key={result.name + '_' + idx}
+                                className={`search-suggestion-item ${result.type}`}
+                                onMouseDown={() => handleSuggestionClick(result)}
+                              >
+                                {result.name}
+                                <span className="search-suggestion-type">{result.type}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                      {/* Previous Area button to the right of search bar */}
+                      {selectionPath.length > 0 && !showCompareForRecent && (
+                        <button
+                          className="prev-area-button"
+                          style={{marginBottom: "0px", height: 40}}
+                          onClick={() => {
+                            if (selectionPath.length === 1) {
+                              setSelectionPath([]);
+                              setCheckedTimestamps([]);
+                              setSelectedRouteInfo(null);
+                              setTimestamps([]);
+                            } else {
+                              setSelectionPath(selectionPath.slice(0, -1));
+                              setCheckedTimestamps([]);
+                              setSelectedRouteInfo(null);
+                              setTimestamps([]);
+                            }
+                          }}
+                        >
+                          ← {selectionPath.length === 1 ? "All Areas" : selectionPath[selectionPath.length - 2]}
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className="area-navigator-overlay">
+                {treeData.length > 0 && renderAreaNavigator()}
+              </div>
+              <RecentRoutes
+                onSelectAttempts={(attempts) => handleRecentRouteSelect(attempts)}
+                selectedAttempts={selectedRecentAttempts}
+                showCompare={showCompareForRecent}
+              />
+            </>
+          )}
           {/* Show CompareImageProcessor for recent routes if selected */}
           {showCompareForRecent && selectedRecentAttempts.length > 0 ? (
             <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
-          ) : selectedRouteInfo && timestamps.length > 0 ? (
+          ) : (selectedRouteInfo && (timestamps.length > 0 || timestamps.length === 0)) ? (
             // Show TimestampThumbnails for selected route
             <>
               <h2 
@@ -373,15 +383,11 @@ const ViewRouteData = () => {
                 boxSizing: "border-box",
                 borderRadius: "4px 4px 0 0 ", 
                 backgroundColor: "rgba(0, 0, 0, 0.4)",
-
-              
               }}
                 >
                 {selectedRouteInfo.name.toUpperCase()}
               </h2>
-            
               <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
-      
               <TimestampThumbnails
                 basePath={selectedRouteInfo.basePath}
                 timestamps={timestamps}
@@ -395,7 +401,6 @@ const ViewRouteData = () => {
                   );
                 }}
               />
-              
             </>
           ) : areaRoutes.length > 0 ? (
             // Show all route thumbnails under the selected area
@@ -422,22 +427,7 @@ const ViewRouteData = () => {
                 ))}
               </div>
             </div>
-          ) : (
-            // Show Area Navigator/Map and RecentRoutes on initial load
-            <>
-
-                <div className="area-navigator-overlay">
-                  {treeData.length > 0 && renderAreaNavigator()}
-                </div>
-    
-              <RecentRoutes
-                onSelectAttempts={(attempts) => handleRecentRouteSelect(attempts)}
-                selectedAttempts={selectedRecentAttempts}
-                showCompare={showCompareForRecent}
-              />
-         
-            </>
-          )}
+          ) : null}
           
         </div>
 

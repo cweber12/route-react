@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import ModelSettings from "./ModelSettings";
-import PoseModelTable from "./PoseModelTable.jsx";
 
 const ExtractPose = ({
   videoPath,
@@ -160,25 +159,33 @@ const ExtractPose = ({
     setCoordinates({ lat, lng });
   };
 
-  async function handleCancel() {
-    await fetch("/api/cancel-processing", { method: "POST" });
-    alert("Processing cancel requested.");
+  // Fix handleCancel: make it an async function and use correct syntax
+  const handleCancel = async () => {
+    try {
+      await fetch("/api/cancel-processing", { method: "POST" });
+      setProcessingStatus("Processing cancelled.");
+    } catch (err) {
+      setProcessingStatus("Cancel failed.");
+    } finally {
+      setProcessing(false);
+    }
   }
 
   return (
 <>
       <div 
-      className="parent-container parent-container-row" 
+      className="parent-container parent-container-column" 
       style={{
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "flex-start", 
         boxSizing: "border-box",
         width: "100%",
         padding: 0, 
         margin: 0, 
+        gap: "20px",
       }}
       >
-      <div className="child-container child-container-column">
+      <div className="parent-container parent-container-row" style={{padding: 0}}>
       <select
         id="poseModel"
         value={poseModel}
@@ -200,22 +207,19 @@ const ExtractPose = ({
         ))}
       </select>
       <button
-          onClick={() => {
-            setShowParams(!showParams);
-            setShowSiftSliders(!showSiftSliders); // <-- add this
-          }}
-          style={{borderRadius: "4px"}}
-          disabled={!videoPath || loading || processing}
-        >
-        
-          {showParams ? "HIDE" : ""} SETTINGS
-     
+        onClick={() => {
+          setShowParams(!showParams);
+          setShowSiftSliders(!showSiftSliders); // <-- add this
+        }}
+      >
+        Toggle Settings
       </button>
+      </div>
       {showParams && (
         <div className="child-container child-container-column" 
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.5)", 
-          color: "rgb(228, 255, 146)", 
+          color: "white", 
           borderRadius: "0 0 4px 4px", 
           padding: "10px 20px", 
           boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
@@ -252,17 +256,16 @@ const ExtractPose = ({
         />
         </div>
       )}
-      </div>
+
       
-      <div className="child-container child-container-column">
 
       <button
           onClick={handleProcessVideo}
           className={processing ? "processing process-button" : "process-button"}
-          style={{borderRadius: "4px"}}
+          style={{borderRadius: "4px", padding: 0}}
           disabled={!videoPath || loading || processing}
         >
-          {processing ? "RUNNING..." : "RUN"}
+          {processing ? "Scanning..." : "Scan Video"}
           
         </button>
         {processing && (
@@ -276,7 +279,7 @@ const ExtractPose = ({
   
 
       </div>
-      </div>
+
 
     </>
   );

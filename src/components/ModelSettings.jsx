@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import ClaheSettingsTable from "./ClaheSettingsTable";
 
 import "../App.css";
 
@@ -39,12 +38,6 @@ const ModelSettings = ({
   gamma,
   setGamma, 
 
-  /* New props for climber detection settings */
-  detectClimbers,
-  setDetectClimbers,
-  multiplePeople,
-  setMultiplePeople,
-
 }) => {
 
   const [showClahe, setShowClahe] = useState(false);
@@ -63,7 +56,7 @@ const ModelSettings = ({
           onChange={(e) => setFrameSampleRate(parseInt(e.target.value))}
           style={{height: "30px"}}
         />
-        <label>Detect Every N Frames</label>
+        <label> Detection Rate</label>
       </div>
       <div className="child-container nested-row">
         <input
@@ -74,27 +67,7 @@ const ModelSettings = ({
           onChange={(e) => setSiftNFeatures(parseInt(e.target.value))}
           style={{height: "30px"}}
         />
-        <label> Num BG Features</label>
-      </div>
-
-      {/* New: Climber detection checkboxes */}
-      <div className="child-container nested-row">
-        <input
-          type="checkbox"
-          checked={detectClimbers}
-          style={{ marginRight: 10, width: 20, height: 20 }}
-          onChange={e => setDetectClimbers(e.target.checked)}
-        />
-        <label>Climber Far From Camera</label>
-      </div>
-      <div className="child-container nested-row">
-        <input
-          type="checkbox"
-          checked={multiplePeople}
-          style={{ marginRight: 10, width: 20, height: 20 }}
-          onChange={e => setMultiplePeople(e.target.checked)}
-        />
-        <label>Multiple People in Frame</label>
+        <label> Detected Features</label>
       </div>
 
       <div className="child-container nested-row">

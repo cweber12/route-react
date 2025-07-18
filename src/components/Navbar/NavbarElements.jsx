@@ -3,15 +3,12 @@ import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Nav = styled.nav`
-    background: url("/assets/4020330.jpg");
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    height: 140px;
+    background: linear-gradient(180deg, rgba(11, 28, 38, 1), rgba(11, 28, 38, 0.3));
+    height: 80px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     padding: 0;
     margin-bottom: 20px;
     position: fixed;
@@ -22,30 +19,8 @@ export const Nav = styled.nav`
     z-index: 1000;
     box-sizing: border-box;
 
-    @media screen and (max-width: 768px) {
-        height: 100px;
-        max-width: 100vw; 
-        min-width: 100vw;
-    }
 
     
-`;
-
-export const NavTop = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
-    width: 100%;
-    height: 40%;
-`;
-
-export const NavBottom = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-    height: 60%;
-    gap: 20px; 
 `;
 
 export const NavMenu = styled.div`
@@ -54,30 +29,25 @@ export const NavMenu = styled.div`
     max-width: 100vw; 
     min-width: 100vw; 
     align-items: center;
-
-    gap: 80px;
+    justify-content: flex-start;
+    gap: 20px;
     background: rgba(30, 30, 30, 0.8);
-
-    justify-content: center;
-
-
+    padding: 0 20px;
+    
     @media screen and (max-width: 480px) {
         gap: 10px;
         padding: 0; 
-        justify-content: center;
         
-    }
-
-    
+    }   
 `;
 
 export const NavLink = styled(Link)`
     color: lightgray;
     background:rgba(39, 15, 15, 0.3); 
-    width: 280px;
-    font-size: 20px;
+    width: 240px;
+    font-size: 16px;
     font-weight: 520;
-    padding: 10px 16px;
+    padding: 6px 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,27 +57,22 @@ export const NavLink = styled(Link)`
     white-space: nowrap;
     transition: all 0.3s ease;
     border-radius: 4px;   
-    border-left: 4px solid rgb(228, 255, 146);
-    border-right: 4px solid #e4ff92;
+
     
     &.active-link {
-        font-size: 22px;
         background: linear-gradient(180deg, rgba(39, 15, 15, 0.3), rgba(39, 15, 15, 0.5));
         font-weight: 550;
-        text-shadow: 0 0 5px rgba(45, 16, 16, 0.8);
-        border-top: 1px solid rgb(228, 255, 146);
-        border-bottom: 1px solid #e4ff92;
+        border: 1px solid #c6ff1d;
 
         @media screen and (max-width: 768px) {
             font-size: 14px;
-            width: 30%; 
         }
 
     }
 
     &:hover {
         color: #102E50;
-        background: rgb(228, 255, 146);
+        background: #c6ff1d;
     }
 
     @media screen and (max-width: 768px) {
@@ -136,6 +101,7 @@ export const UserIconContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 40px;
 `;
 
 export const LogoutButton = styled.button`
@@ -160,4 +126,16 @@ export const LogoutButton = styled.button`
     @media screen and (max-width: 480px) {
         font-size: 14px;
     }
+`;
+
+export const MenuIcon = styled.img`
+  width: 40px;
+  height: 40px;
+  margin: 0 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    height: 36px;
+    width: 36px;
+  }
 `;
