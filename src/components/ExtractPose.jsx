@@ -6,51 +6,38 @@ const ExtractPose = ({
   videoPath,
   userName,
   loading,
-  poseFilePath,
   setPoseFilePath,
   setSiftFilePath,
   showSiftSliders,           
   setShowSiftSliders,
   siftUp,
-  setSiftUp,
   siftDown,
-  setSiftDown,
   siftLeft,
-  setSiftLeft,
   siftRight,
-  setSiftRight,
   climberUp, 
-  setClimberUp,
   climberDown,
-  setClimberDown,
   climberLeft,
-  setClimberLeft,
   climberRight,
-  setClimberRight,
   isStatic,
-  detectClimbers,
-  setDetectClimbers,
-  multiplePeople,
-  setMultiplePeople,
+
+
 }) => {
   const [processingStatus, setProcessingStatus] = useState("");
   const [progress, setProgress] = useState(0);
   const [preprocess, setPreprocess] = useState(false);
   const [sharpenImage, setSharpenImage] = useState(false);
-  const [kernelEdge, setKernelEdge] = useState(0.5);
-  const [kernelCenter, setKernelCenter] = useState(0.5);
+  const [kernelEdge, setKernelEdge] = useState(-1);
+  const [kernelCenter, setKernelCenter] = useState(5);
   const [adjustBrightness, setAdjustBrightness] = useState(false);
   const [gamma, setGamma] = useState(1.0);
   const [processing, setProcessing] = useState(false);
   const [enhanceContrast, setEnhanceContrast] = useState(false);
   const [showParams, setShowParams] = useState(false);
   const [poseModel, setPoseModel] = useState("full");
-  const [frameSampleRate, setFrameSampleRate] = useState(15);
-  const [siftNFeatures, setSiftNFeatures] = useState(600);
+  const [frameSampleRate, setFrameSampleRate] = useState(20);
+  const [siftNFeatures, setSiftNFeatures] = useState(2000);
   const [clipLimit, setClipLimit] = useState(3);
-  const [tileGridSize, setTileGridSize] = useState(10); 
-  const [minPresenceConfidence, setMinPresenceConfidence] = useState(0.9); 
-
+  const [tileGridSize, setTileGridSize] = useState(10);  
 
   // Route Coordinates
   const [coordinates, setCoordinates] = useState({ lat: "", lng: "" });
@@ -103,13 +90,11 @@ const ExtractPose = ({
       video_path: videoPath,
       pose_model: poseModel,
       enhance_contrast: enhanceContrast,
-      detect_climbers: detectClimbers,
       preprocess: preprocess,
       frame_sample_rate: frameSampleRate,
       sift_config: { nfeatures: siftNFeatures },
       clip_limit: clipLimit,
       tile_grid_size: tileGridSize,
-      min_pose_presence_confidence: minPresenceConfidence,
       sharpen: sharpenImage,
       kernel_edge: kernelEdge,
       kernel_center: kernelCenter,
@@ -120,7 +105,6 @@ const ExtractPose = ({
       sift_left: siftLeft,
       sift_right: siftRight,
       static_frame: isStatic,
-      multiple_people: multiplePeople,
       climber_top: climberUp,
       climber_bottom: climberDown,
       climber_left: climberLeft,
@@ -249,10 +233,8 @@ const ExtractPose = ({
           setAdjustBrightness={setAdjustBrightness}
           gamma={gamma}
           setGamma={setGamma}
-          detectClimbers={detectClimbers}
-          setDetectClimbers={setDetectClimbers}
-          multiplePeople={multiplePeople}
-          setMultiplePeople={setMultiplePeople}
+         
+          
         />
         </div>
       )}

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import CompareImageProcessor from "./CompareImageProcessor";
 
-const RecentRoutes = () => {
+const RecentRoutes = ({ onSelectAttempts, selectedAttempts = [], showCompare = false }) => {
   const userName = sessionStorage.getItem("userName");
   const bucketName = "route-keypoints";
 
   const [recentAttempts, setRecentAttempts] = useState([]);
-  const [checkedAttempts, setCheckedAttempts] = useState([]);
 
   const API = import.meta.env.VITE_API_BASE_URL_M;
   
@@ -26,9 +24,8 @@ const RecentRoutes = () => {
 
   // Only allow one checked attempt at a time
   const toggleAttempt = (fullPath) => {
-    setCheckedAttempts((prev) =>
-      prev.includes(fullPath) ? [] : [fullPath]
-    );
+    const newSelectedAttempts = selectedAttempts.includes(fullPath) ? [] : [fullPath];
+    onSelectAttempts(newSelectedAttempts);
   };
 
   // Remove expanded state, use local state for press/expand effect
@@ -56,24 +53,23 @@ const RecentRoutes = () => {
 
   return (
     <>
-      <CompareImageProcessor selectedS3PathArray={checkedAttempts} />
-      <h2 
-      className="div-header"
-      >Recent Routes</h2>
+      <div className="parent-container parent-container-column">
+      <h2 className="div-header">RECENT ROUTES</h2>
       <div 
-      className="parent-container parent-container-row" 
-      style={{
-        justifyContent: "flex-start",
-        width: "fit-content", 
-        marginBottom: "24px",
-        }}>
+        className="parent-container parent-container-row" 
+        style={{
+          justifyContent: "flex-start",
+          width: "fit-content", 
+          marginBottom: "24px",
+          }}
+        >
         {recentAttempts.map((attempt) => {
           const rawPath = `${attempt.basePath}/${attempt.timestamp}/route_image.jpg`;
           const encodedPath = encodeURIComponent(rawPath).replace(/%2F/g, "/");
           const imageUrl = `https://${bucketName}.s3.amazonaws.com/${encodedPath}`;
           const fullPath = `s3://${bucketName}/${attempt.basePath}/${attempt.timestamp}/`;
 
-          const isChecked = checkedAttempts.includes(fullPath);
+          const isChecked = selectedAttempts.includes(fullPath);
           const isPressed = pressed === fullPath;
 
           return (
@@ -100,14 +96,6 @@ const RecentRoutes = () => {
                   )}
                 </p>
               </div>
-              {/* Checkbox positioned absolutely */}
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={e => { e.stopPropagation(); toggleAttempt(fullPath); }}
-                className="recent-route-checkbox"
-                style={{display: "none"}}
-              />
               {/* Image container - fills remaining space */}
               <div className="thumbnail-image-container">
                 <img
@@ -123,6 +111,7 @@ const RecentRoutes = () => {
             </div>
           );
         })}
+      </div>
       </div>
     </>
   );

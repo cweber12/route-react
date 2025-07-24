@@ -84,12 +84,14 @@ const ViewRouteData = () => {
   // Handler for selecting recent attempts from RecentRoutes
   const handleRecentRouteSelect = (attempts) => {
     setSelectedRecentAttempts(attempts);
-    setShowCompareForRecent(true);
-    // Hide route selection UI
-    setSelectionPath([]);
-    setCheckedTimestamps([]);
-    setSelectedRouteInfo(null);
-    setTimestamps([]);
+    setShowCompareForRecent(attempts.length > 0);
+    // Hide route selection UI when recent routes are selected
+    if (attempts.length > 0) {
+      setSelectionPath([]);
+      setCheckedTimestamps([]);
+      setSelectedRouteInfo(null);
+      setTimestamps([]);
+    }
   };
 
   // Handler for clearing recent route selection (e.g., after compare or reset)
@@ -179,7 +181,7 @@ const ViewRouteData = () => {
          <div className="area-navigator-header-row">
         {selectionPath.length === 0 && (
          
-            <h3 className="area-navigator-header">All Areas</h3>
+            <h3 className="area-navigator-header">ALL AREAS</h3>
           
         )}
         {currentName && (
@@ -299,9 +301,20 @@ const ViewRouteData = () => {
 
           {/* Main Content Logic */}
           {/* Show Area Navigator/Map and RecentRoutes on initial load */}
-          {(!selectedRouteInfo && areaRoutes.length === 0 && !showCompareForRecent) && (
+          {(!selectedRouteInfo && areaRoutes.length === 0) && (
             <>
-            <h2 className="page-header">Saved Routes</h2>
+            <div 
+            className="parent-container saved-routes-container"
+            >
+              <div 
+              className="parent-container parent-container-column"
+              style={{width: "50%", maxWidth: "500px"}}
+              >
+            <h2 
+            className="page-header"
+            style={{fontSize: "40px"}}
+            >SAVED ROUTES
+            </h2>
               
                 {treeData.length > 0 && (
                   <>
@@ -311,7 +324,7 @@ const ViewRouteData = () => {
                         <input
                           className="search-input"
                           type="text"
-                          placeholder="Search routes or areas..."
+                          placeholder="Enter area or route name"
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
                           onFocus={() => setShowSuggestions(true)}
@@ -332,6 +345,7 @@ const ViewRouteData = () => {
                             ))}
                           </ul>
                         )}
+                      
                       </div>
                       {/* Previous Area button to the right of search bar */}
                       {selectionPath.length > 0 && !showCompareForRecent && (
@@ -358,21 +372,27 @@ const ViewRouteData = () => {
                     </div>
                   </>
                 )}
+                </div>
                 <div className="area-navigator-overlay">
                 {treeData.length > 0 && renderAreaNavigator()}
               </div>
+            </div>
+
+          {/* Show CompareImageProcessor for recent routes if selected */}
+          {showCompareForRecent && selectedRecentAttempts.length > 0 && (
+            <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
+          )}
               <RecentRoutes
                 onSelectAttempts={(attempts) => handleRecentRouteSelect(attempts)}
                 selectedAttempts={selectedRecentAttempts}
                 showCompare={showCompareForRecent}
               />
+
             </>
           )}
-          {/* Show CompareImageProcessor for recent routes if selected */}
-          {showCompareForRecent && selectedRecentAttempts.length > 0 ? (
-            <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
-          ) : (selectedRouteInfo && (timestamps.length > 0 || timestamps.length === 0)) ? (
-            // Show TimestampThumbnails for selected route
+
+          {/* Show TimestampThumbnails for selected route */}
+          {selectedRouteInfo && (timestamps.length > 0 || timestamps.length === 0) && (
             <>
               <h2 
               style={{
@@ -387,7 +407,9 @@ const ViewRouteData = () => {
                 >
                 {selectedRouteInfo.name.toUpperCase()}
               </h2>
-              <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
+              {checkedTimestamps.length > 0 && (
+                <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
+              )}
               <TimestampThumbnails
                 basePath={selectedRouteInfo.basePath}
                 timestamps={timestamps}
@@ -402,8 +424,10 @@ const ViewRouteData = () => {
                 }}
               />
             </>
-          ) : areaRoutes.length > 0 ? (
-            // Show all route thumbnails under the selected area
+          )}
+
+          {/* Show all route thumbnails under the selected area */}
+          {areaRoutes.length > 0 && (
             <div className="area-routes-list">
               <h3 style={{color: "rgb(228, 255, 146)", margin: "10px 0"}}>Routes in this Area:</h3>
               <div style={{display: "flex", flexWrap: "wrap", gap: 16}}>
@@ -427,7 +451,7 @@ const ViewRouteData = () => {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
           
         </div>
 

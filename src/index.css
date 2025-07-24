@@ -17,28 +17,6 @@
   min-height: 100vh; 
 }
 
-@media screen and (max-width: 768px) {
-  :root {
-    margin-top: 100px; 
-      
-  }
-}
-
-@media screen and (max-width: 480px) {
-  :root {
-    margin-top: 120px;
-
-
-  }
-}
-
-@media screen and (max-width: 360px) {
-  :root {
-    margin-top: 80px;
-
-  }
-}
-
 a {
   font-weight: 600;
   margin: 0 5px;
@@ -120,17 +98,23 @@ button:disabled {
 }
 
 .process-button {
-  background-color: #B6F500; /* Green */
+  background-color: #c6ff1d; 
   color: #333;
 }
 
 .process-button:hover {
-  background-color: #79a001; /* Darker green */
+  background-color: rgb(89, 119, 1); 
   color: black;
 }
 
+.process-button:disabled {
+  background-color: #defc84; 
+  color: #666; 
+  cursor: not-allowed;
+}
+
 html {  
-  background: url('/assets/topo_bg_2.PNG');
+  background: linear-gradient(360deg, #232323, #464946);
   background-position:top center;
   background-size: cover;
   background-attachment: fixed;
@@ -141,5 +125,4 @@ html {
   padding: 120px; 
   
 }
-
 

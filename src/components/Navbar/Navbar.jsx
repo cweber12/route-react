@@ -123,6 +123,13 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                   >
                     AREAS & ROUTES
                   </NavLink>
+                  <NavLink 
+                    to="/map" 
+                    className={location.pathname === "/map" ? "active-link" : ""}
+                    onClick={handlePageChange}
+                  >
+                    MAP
+                  </NavLink>
                 </div>
               )}
             <UserIconContainer>
@@ -149,12 +156,8 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                     minWidth: "140px",
                     zIndex: 1001,
                     marginTop: "5px",
-                    
-                    // Animation properties
                     transformOrigin: "top right",
                     animation: "dropdownExpand 0.2s ease-out",
-                    
-                    // Initial state for animation
                     opacity: 1,
                     transform: "scale(1)",
                   }}
@@ -193,8 +196,6 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                 </div>
               )}
             </UserIconContainer>
-
-          {/* Bottom section - Navigation links */}
           
         </Nav>
       )}

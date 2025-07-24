@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UploadVideo from "./pages/UploadVideo";
 import Home from "./pages/Home";
+import Map from "./pages/Map";
 import Navbar from "./components/Navbar/Navbar";
 import "./App.css";
 import ViewRouteData from "./pages/ViewRouteData";
@@ -69,6 +70,10 @@ const App = () => {
               <Route
                 path="/route-data"
                 element={<ViewRouteData onFinalFolderSelect={setVideoPath} />}
+              />
+              <Route
+                path="/map"
+                element={<Map />}
               />
             </>
           )}

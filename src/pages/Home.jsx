@@ -15,42 +15,52 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
 
     return (
       <>
+
       <div className="home">
-        <h1 className="title">RouteScan</h1>
-        
-          <div className="login" >
-      
-              {viewRegistration && <RegistrationForm />}
-              {viewLogin && <LoginForm onLogin={() => setIsLoggedIn(true)} />}
-
-              {viewRegistration && (
-                  <span 
-                  onClick={() => {
-                    setViewRegistration(false);
-                    setViewLogin(true);
-                  }} 
-                  style={{ color: "#e4ff92", cursor: "pointer", textDecoration: "underline" }}>
-                    Login
-                  </span>
-              )}
-              {viewLogin && (
-                  <span 
-                    onClick={() => {
-                      setViewRegistration(true);
-                      setViewLogin(false);
-                    }} 
-                    style={{ color: "#e4ff92", cursor: "pointer", fontSize: 22}}>
-                    Register
-                  </span>
-              )}
-            </div>
-
+        <div className="home-bg" />
+        <h1 className="title">Route Scan</h1>
+        <div className="login">
+          {viewRegistration && <RegistrationForm />}
+          {viewLogin && <LoginForm onLogin={() => setIsLoggedIn(true)} />}
+          {viewRegistration && (
+            <span
+              onClick={() => {
+                setViewRegistration(false);
+                setViewLogin(true);
+              }}
+              style={{ color: "#e4ff92", cursor: "pointer", textDecoration: "underline" }}
+            >
+              Login
+            </span>
+          )}
+          {viewLogin && (
+            <span
+              onClick={() => {
+                setViewRegistration(true);
+                setViewLogin(false);
+              }}
+              style={{ color: "#e4ff92", cursor: "pointer", fontSize: 22 }}
+            >
+              Register
+            </span>
+          )}
         </div>
+        <button
+          onClick={() => {
+            sessionStorage.setItem('userName', 'Demo');
+            setIsLoggedIn(true);
+          }}
+          style={{ marginTop: "30px", border: "3px solid #c6ff1d", textAlign: "center", padding: "0px"}}
+        >
+          Demo
+        </button>
+      </div>
+
 
       </>
     );
-  };
-}
+  }
+};
 
   export default Home;
 

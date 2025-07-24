@@ -40,9 +40,6 @@ const ModelSettings = ({
 
 }) => {
 
-  const [showClahe, setShowClahe] = useState(false);
-
-
   return (
     <>
       {/* Additional Detection Settings */}
