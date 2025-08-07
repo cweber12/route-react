@@ -90,19 +90,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
   if (fetchError) return <p>Reference frames not available ** process scheduling error **</p>;
 
   return (
-    <div 
-    className="parent-container parent-container-column" 
-    style={{
-      alignItems: "center", 
-      gap: 0,
-      background: "linear-gradient(90deg, rgb(11, 29, 40), rgba(11, 29, 40, 0.5))",
-      paddingTop: "20px",
-      borderRadius: "4px",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-    
-    }}
-    >
-         
+    <div className="ref-frame-container">
       <Zoom>
         <img
           className="media"

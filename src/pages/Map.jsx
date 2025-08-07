@@ -4,7 +4,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 
-// Fix for default markers in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -12,33 +11,51 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Custom climbing route icon
+// ROUTE ICON
 const routeIcon = new L.Icon({
-  iconUrl: '/assets/route_icon.jpg',
-  iconSize: [25, 25],
-  iconAnchor: [12, 25],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="8" fill="#2bff00ff" stroke="#130033ff" stroke-width="2"/>
+    </svg>
+  `),
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10],
+  shadowSize: [0, 0]
 });
 
-// Custom area icon (for states and sub-locations)
+// USER LOCATION ICON
+const userLocationIcon = new L.Icon({
+  iconUrl: '/assets/location_icon.png',
+  iconSize: [70, 70],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -15],
+  shadowSize: [0, 0]
+});
+
+// AREA ICON (currently not used) 
 const areaIcon = new L.Icon({
-  iconUrl: '/assets/map_pin.png',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="8" fill="#FF4444" stroke="#CC0000" stroke-width="2"/>
+    </svg>
+  `),
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10],
+  shadowSize: [0, 0]
 });
 
 const Map = () => {
   const [mapCenter, setMapCenter] = useState([39.7392, -104.9903]); // Default to Denver, CO
-  const [mapZoom, setMapZoom] = useState(10);
+  const [mapZoom, setMapZoom] = useState(5);
   const [mapData, setMapData] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
   const [showLegend, setShowLegend] = useState(false);
 
   const userName = sessionStorage.getItem("userName");
   const API = import.meta.env.VITE_API_BASE_URL_M;
+  const TILE_API = import.meta.env.MAP_TILE_API;
 
   // Get user's current location
   useEffect(() => {
@@ -105,35 +122,27 @@ const Map = () => {
           className="map-legend-toggle"
           onClick={() => setShowLegend(!showLegend)}
         >
-          Legend {showLegend ? '▼' : '▶'}
+          {showLegend ? 'HIDE' : 'SHOW'} LEGEND
         </button>
 
         {/* Legend dropdown */}
         {showLegend && (
           <div className="map-legend-dropdown">
-            <h3>Map Legend</h3>
+            <h3 className="">MAP LEGEND</h3>
             <div className="map-legend-item">
-              <div 
-                className="map-legend-icon" 
-                style={{ backgroundColor: '#007bff' }}
-              ></div>
+              <img 
+                src="/assets/location_icon.png" 
+                alt="Location icon" 
+                style={{ width: '20px', height: '20px' }}
+              />
               <span>Your current location</span>
             </div>
             <div className="map-legend-item">
-              <img 
-                src="/assets/route_icon.jpg" 
-                alt="Route icon" 
-                style={{ width: '20px', height: '20px' }}
-              />
+              <div 
+                className="map-legend-icon" 
+                style={{ backgroundColor: '#c8ff24ff', border: '3px solid #1c0040ff' }}
+              ></div>
               <span>Climbing routes</span>
-            </div>
-            <div className="map-legend-item">
-              <img 
-                src="/assets/map_pin.png" 
-                alt="Area icon" 
-                style={{ width: '20px', height: '20px' }}
-              />
-              <span>Climbing areas & locations</span>
             </div>
           </div>
         )}
@@ -146,12 +155,12 @@ const Map = () => {
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url={`https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png`}
           />
 
           {/* User's current location */}
           {userLocation && (
-            <Marker position={userLocation}>
+            <Marker position={userLocation} icon={userLocationIcon}>
               <Popup>
                 <div>
                   <strong>Your Location</strong>
@@ -162,10 +171,15 @@ const Map = () => {
             </Marker>
           )}
 
-          {/* Map data from backend - areas and routes */}
+          {/* Map data from backend*/}
           {mapData.length > 0 ? (
             mapData.map((item, index) => {
-              console.log("Rendering map item:", item);
+              // console.log("Processing map item:", item);
+              
+              if (item.rating === null || item.rating === undefined) {
+                console.log("Skipping area:", item.name);
+                return null;
+              }
               
               // Check for coordinates in different possible property names
               let lat, lng;
@@ -198,10 +212,10 @@ const Map = () => {
                 }
               }
               
-              // Validate coordinate ranges (lat: -90 to 90, lng: -180 to 180)
+              // Validate coordinate ranges
               if (lat === undefined || lng === undefined || 
                   lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-                console.log("Skipping item with invalid coordinates:", {
+                console.log("Skipping route with invalid coordinates:", {
                   name: item.name,
                   lat: item.lat,
                   lng: item.lng,
@@ -212,25 +226,25 @@ const Map = () => {
                 return null;
               }
               
-              console.log(`Valid coordinates found for ${item.name}: lat=${lat}, lng=${lng}`);
-              
-              // Determine if this is a route (has rating) or an area
-              const isRoute = item.rating !== null && item.rating !== undefined;
-              const icon = isRoute ? routeIcon : areaIcon;
+              console.log(`Valid coordinates found for route ${item.name}: lat=${lat}, lng=${lng}`);
               
               return (
                 <Marker
-                  key={`map-item-${index}`}
+                  key={`route-${item.id || index}`}
                   position={[lat, lng]}
-                  icon={icon}
+                  icon={routeIcon}
                 >
                   <Popup>
                     <div>
-                      <strong>{item.name}</strong>
+                      <strong style={{ color: '#2c5aa0' }}>{item.name}</strong>
                       <br />
-                      {item.rating && <span>Rating: {item.rating}<br /></span>}
-                      {item.type && <span>Type: {item.type}<br /></span>}
-                      <small>{isRoute ? 'Climbing Route' : 'Climbing Area'}</small>
+                      {item.rating && (
+                        <span style={{ color: '#007bff', fontWeight: '600' }}>
+                          Grade: {item.rating}
+                        </span>
+                      )}
+                      <br />
+                      <small style={{ color: '#666' }}>Climbing Route</small>
                     </div>
                   </Popup>
                 </Marker>

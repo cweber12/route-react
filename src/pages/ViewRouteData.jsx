@@ -296,25 +296,20 @@ const ViewRouteData = () => {
     <>
       <div 
       className="page-container" 
-      style={{background: "none", border: "none", padding: 0, margin: 0}}
       >
 
           {/* Main Content Logic */}
           {/* Show Area Navigator/Map and RecentRoutes on initial load */}
           {(!selectedRouteInfo && areaRoutes.length === 0) && (
             <>
+            <div className="page-header">
+                  <h2>SEARCH ROUTES</h2>
+                </div>
             <div 
             className="parent-container saved-routes-container"
             >
-              <div 
-              className="parent-container parent-container-column"
-              style={{width: "50%", maxWidth: "500px"}}
-              >
-            <h2 
-            className="page-header"
-            style={{fontSize: "40px"}}
-            >SAVED ROUTES
-            </h2>
+              <div className="parent-container parent-container-column">
+                
               
                 {treeData.length > 0 && (
                   <>
@@ -380,7 +375,12 @@ const ViewRouteData = () => {
 
           {/* Show CompareImageProcessor for recent routes if selected */}
           {showCompareForRecent && selectedRecentAttempts.length > 0 && (
+            <>
+            <div className="page-header">
+              <h2>SELECT IMAGE & VIEW ATTEMPT</h2>
+            </div>
             <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
+            </>
           )}
               <RecentRoutes
                 onSelectAttempts={(attempts) => handleRecentRouteSelect(attempts)}
@@ -394,19 +394,11 @@ const ViewRouteData = () => {
           {/* Show TimestampThumbnails for selected route */}
           {selectedRouteInfo && (timestamps.length > 0 || timestamps.length === 0) && (
             <>
-              <h2 
-              style={{
-                margin: 0, 
-                padding: "10px 20px ", 
-                color: "rgb(243, 255, 207)",
-                width: "100%",
-                boxSizing: "border-box",
-                borderRadius: "4px 4px 0 0 ", 
-                backgroundColor: "rgba(0, 0, 0, 0.4)",
-              }}
-                >
+            <div className="page-header">
+              <h2>
                 {selectedRouteInfo.name.toUpperCase()}
               </h2>
+            </div>
               {checkedTimestamps.length > 0 && (
                 <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
               )}

@@ -104,17 +104,20 @@ const UploadVideo = () => {
               className="parent-container parent-container-row"
               style={{alignItems: "center"}}
             >
-              <h2 className="page-header" style={{width: "100%"}}>
-                SET DETECTION AREAS
-                <img
-                  src="/assets/info.png"
-                  alt="Crop Info"
+              <div className="page-header">
+              <h2>SET DETECTION AREAS</h2>
+                
+                <div
                   onClick={() => setShowCropInfo(!showCropInfo)}
                   className="info-icon"
-                  style={{marginLeft: "20px"}}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Crop Info"
+             
                 />
-              </h2>
-            </div>
+                </div>
+
+              </div>
             {showCropInfo && (
               <div style={{maxWidth: "600px"}}>
                 <p style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
@@ -139,8 +142,8 @@ const UploadVideo = () => {
               <button
                 onClick={() => setEditMode('sift')}
                 style={{
-                  background: editMode === 'sift' ? '#e4ff92' : '#eee',
-                  color: editMode === 'sift' ? '#222' : '#222',
+                  background: editMode === 'sift' ? '' : '#eee',
+                  color: editMode === 'sift' ? '' : '#222',
                   border: 'none',
                   borderRadius: 4,
                   width: 'auto',
@@ -155,8 +158,8 @@ const UploadVideo = () => {
               <button
                 onClick={() => setEditMode('climber')}
                 style={{
-                  background: editMode === 'climber' ? '#2f88c7' : '#eee',
-                  color: editMode === 'climber' ? '#222' : '#222',
+                  background: editMode === 'climber' ? '' : '#eee',
+                  color: editMode === 'climber' ? '' : '#222',
                   border: 'none',
                   borderRadius: 4,
                   padding: '6px 10px',
@@ -203,31 +206,14 @@ const UploadVideo = () => {
               >
                 {videoUrl && (
                   <>
-                    <div 
-                      style={{ 
-                        padding: "50px 20px 20px 50px", 
-                        background: "linear-gradient(90deg, rgb(11, 29, 40), rgba(11, 29, 40, 0.5))",
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'flex-start', 
-                        width: 'auto', 
-                        boxSizing: 'border-box',
-                        borderRadius: 4,
-                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                      }}
-                    >
-                      <div style={{ position: "relative", width: "100%", maxWidth: 800, margin: "0" }}>
+                    <div className="video-processing-container">
+                      <div className="video-wrapper-container">
                         {/* Content box with border for slider alignment */}
                         <div
+                          className="video-overlay-container"
                           style={{
                             width: renderedVideoWidth,
                             height: renderedVideoHeight,
-                            background: "transparent",
-                            boxSizing: "border-box",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            zIndex: 8,
                           }}
                         />
                         <video
@@ -457,16 +443,17 @@ const UploadVideo = () => {
               </div>
             </div>
 
-            <h2 className="page-header" style={{width: "100%"}}>
-              SCAN VIDEO
-              <img
-                src="/assets/info.png"
-                alt="Crop Info"
+            <div className="page-header">
+              <h2>SCAN VIDEO</h2>
+              <span
                 onClick={() => setShowProcessInfo(!showProcessInfo)}
                 className="info-icon"
                 style={{marginLeft: "20px"}}
+                role="button"
+                tabIndex={0}
+                aria-label="Process Info"
               />
-            </h2>
+            </div>
             {showProcessInfo && (
               <div style={{maxWidth: "600px"}}>
                 <p style={{margin: "10px 0px", fontSize: 18, color: '#ccc'}}>
@@ -532,15 +519,20 @@ const UploadVideo = () => {
         )}
 
         {poseFilePath && siftFilePath && !loading && showS3Upload && (
-          <div className="parent-container parent-container-column" >
-            <UploadToS3
-              poseFilePath={poseFilePath}
-              siftFilePath={siftFilePath}
-              userName={userName}
-              setShowS3Upload={setShowS3Upload}
-              autoRefFramePath={autoRefFramePath}
-            />
-          </div>
+          <>
+            <div className="page-header">
+              <h2>SAVE ROUTE DATA</h2>
+            </div>
+            <div className="parent-container parent-container-column">
+              <UploadToS3
+                poseFilePath={poseFilePath}
+                siftFilePath={siftFilePath}
+                userName={userName}
+                setShowS3Upload={setShowS3Upload}
+                autoRefFramePath={autoRefFramePath}
+              />
+            </div>
+          </>
         )}
       </div>
     </>

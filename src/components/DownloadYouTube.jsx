@@ -73,6 +73,7 @@ const DownloadYouTube = ({ onDownloadComplete, setVideoUrl }) => {
             onClick={handleDownload}
             className={downloading ? "processing process-button" : "process-button"}
             disabled={downloading}
+            style={{width: "100%"}}
           >
             {downloading ? "Downloading..." : "Download Video"}  
           </button>       

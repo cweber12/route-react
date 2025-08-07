@@ -54,13 +54,15 @@ const RecentRoutes = ({ onSelectAttempts, selectedAttempts = [], showCompare = f
   return (
     <>
       <div className="parent-container parent-container-column">
-      <h2 className="div-header">RECENT ROUTES</h2>
-      <div 
-        className="parent-container parent-container-row" 
-        style={{
-          justifyContent: "flex-start",
-          width: "fit-content", 
-          marginBottom: "24px",
+        <div className="page-header">
+          <h2>RECENT ROUTES</h2>
+        </div>
+        <div
+          className="parent-container parent-container-row"
+          style={{
+            justifyContent: "center",
+            width: "fit-content", 
+            marginBottom: "24px",
           }}
         >
         {recentAttempts.map((attempt) => {

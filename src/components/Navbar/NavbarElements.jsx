@@ -3,8 +3,9 @@ import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Nav = styled.nav`
-    background-color: rgba(11, 28, 38, 1);
-    height: 80px;
+    
+    background: black; 
+    height: 60px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -135,7 +136,7 @@ export const MenuIcon = styled.img`
   cursor: pointer;
   transition: all 0.3s ease;
   &:hover {
-    height: 36px;
-    width: 36px;
+    height: 44px;
+    width: 44px;
   }
 `;

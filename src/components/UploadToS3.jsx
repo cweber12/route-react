@@ -136,19 +136,19 @@ const UploadToS3 = ({
     if (areaOptions.length === 0 && routeOptions.length > 0) return null;
 
     return (
-      <div className="parent-container parent-container-row" 
-      style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", textAlign: "center" }}>
+      <div className="parent-container parent-container-column" 
+      style={{ width: "100%", justifyContent: "flex-start", alignItems: "flex-start", textAlign: "center" }}>
         
         {parentName && (
           <>
           <div style={{ display: "flex", flexDirection: "row"}}>
             {grandparentPath.length > 0 && (
               <span
-                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 8}}
+                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 20}}
                 onClick={() => setSelectionPath(grandparentPath)}
               >← Prev Area</span>
             )}
-            <p style={{color: "white", margin: 0}}>{parentName}</p>
+            <p style={{color: "white", margin: 0, fontSize: "20px"}}>{parentName}</p>
           </div>
           </>
         )}
@@ -164,7 +164,7 @@ const UploadToS3 = ({
             }
           }}
           value=""
-          style={{ padding: 8, width: "300px" }}
+          style={{ padding: 8, width: "60%" }}
         >
           <option value="">Select an Area</option>
           {areaOptions.map((n) => (
@@ -196,7 +196,7 @@ const UploadToS3 = ({
           <>
             {grandparent.length > 0 && (
               <span
-                style={{ background: "#e9ffa7ff", color: "black", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 8}}
+                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 20}}
                 onClick={() => setSelectionPath(grandparent)}
               >← Prev Area</span>
             )}
@@ -211,7 +211,7 @@ const UploadToS3 = ({
               window.open(route.url, "_blank");
             }
           }}
-          style={{ padding: 8, width: "250px"}}
+          style={{ padding: 8, width: "60%"}}
         >
           <option value="">-- Select Route --</option>
           {routes.map((r) => (
@@ -279,11 +279,16 @@ const UploadToS3 = ({
         </div>
       )}
       {/* --- SEARCH BAR (fixed top left) & SAVE BUTTON (right of search bar) --- */}
-      <div className="search-container" >
-        <div className="search-bar" >
+      <div 
+      className="search-container"
+      style={{justifyContent: "space-between"}}
+      >
+        <div className="search-bar"
+        style={{width: "60%"}}
+        >
           <input
             type="text"
-            placeholder="Search area or route…"
+            placeholder="Enter a climbing area or route…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -336,10 +341,10 @@ const UploadToS3 = ({
             style={{
               marginLeft: 10,
               height: 40,
-              width: "30%",
+              width: "35%",
               backgroundColor:
                 uploadingS3 || !selectionPath.length || !routeName
-                  ? "darkslategray"
+                  ? "#333"
                   : "#007bff",
               color: "#fff",
               padding: "0 18px",
@@ -356,7 +361,7 @@ const UploadToS3 = ({
             {uploadingS3 ? "Saving..." : "Save"}
           </button>
         )}
-         {/* --- STATUS --- */}
+
       {processingStatus && !uploadingS3 && (
         <p style={{ 
           color: "#c6ff1d", 
@@ -368,14 +373,6 @@ const UploadToS3 = ({
       )}
       </div>
 
-
-      {/* --- AREA/ROUTE DROPDOWNS & ROUTE NAME INPUT (row above map) --- */}
-
- 
-        {renderDropdowns()}
-
-        {renderRoutes()}
-
         <input
           type="text"
           placeholder="Route Name"
@@ -384,7 +381,7 @@ const UploadToS3 = ({
           required
           style={{
             display: "none", // Hide the input
-            minWidth: 180,
+            width: "60%",
             padding: "8px",
             boxSizing: "border-box",
             border: "1px solid #888",
@@ -394,6 +391,10 @@ const UploadToS3 = ({
 
           }}
         />
+
+        {renderDropdowns()}
+
+        {renderRoutes()}
 
 
       {/* --- MAP/CHILDREN (unchanged) --- */}

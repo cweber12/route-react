@@ -17,7 +17,6 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
       <>
 
       <div className="home">
-        <div className="home-bg" />
         <h1 className="title">Route Scan</h1>
         <div className="login">
           {viewRegistration && <RegistrationForm />}
@@ -50,7 +49,7 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
             sessionStorage.setItem('userName', 'Demo');
             setIsLoggedIn(true);
           }}
-          style={{ marginTop: "30px", border: "3px solid #c6ff1d", textAlign: "center", padding: "0px"}}
+          className="demo-button"
         >
           Demo
         </button>

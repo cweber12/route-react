@@ -157,19 +157,10 @@ const ExtractPose = ({
 
   return (
 <>
-      <div 
+    <div 
       className="parent-container parent-container-column" 
-      style={{
-        justifyContent: "flex-start",
-        alignItems: "flex-start", 
-        boxSizing: "border-box",
-        width: "100%",
-        padding: 0, 
-        margin: 0, 
-        gap: "20px",
-      }}
       >
-      <div className="parent-container parent-container-row" style={{padding: 0}}>
+        <div className="compare-buttons-row">
       <select
         id="poseModel"
         value={poseModel}
@@ -198,6 +189,16 @@ const ExtractPose = ({
       >
         Toggle Settings
       </button>
+
+      <button
+          onClick={handleProcessVideo}
+          className={processing ? "processing process-button" : "process-button"}
+          style={{borderRadius: "4px", padding: 0}}
+          disabled={!videoPath || loading || processing}
+        >
+          {processing ? "Scanning..." : "Scan Video"}
+          
+        </button>
       </div>
       {showParams && (
         <div className="child-container child-container-column" 
@@ -238,18 +239,6 @@ const ExtractPose = ({
         />
         </div>
       )}
-
-      
-
-      <button
-          onClick={handleProcessVideo}
-          className={processing ? "processing process-button" : "process-button"}
-          style={{borderRadius: "4px", padding: 0}}
-          disabled={!videoPath || loading || processing}
-        >
-          {processing ? "Scanning..." : "Scan Video"}
-          
-        </button>
         {processing && (
         <button
           style={{borderRadius: "4px"}}

@@ -55,15 +55,11 @@ const Upload = ({ setVideoPath, setVideoUrl}) => {
 
   return (
       <div 
-        className="child-container child-container-column" 
-        style={{
-          alignItems: "flex-start", 
-          padding: 0
-          
-          }}>        
+        className="child-container child-container-column upload-container" >        
         <label 
           htmlFor="video-upload" 
-          className="button-label" 
+          className="upload-video-file" 
+          
         >
         Files
         </label>
