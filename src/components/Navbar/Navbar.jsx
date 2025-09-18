@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Nav, NavLink, UserIconContainer, MenuIcon } from "./NavbarElements";
-import styled from "styled-components";
+// import styled from "styled-components";
 import { useNavigate, useLocation } from 'react-router-dom'; 
-
-// Styled menu icon for consistency
-
 
 const Navbar = ({ isLoggedIn, onLogout }) => {
   const userName = sessionStorage.getItem("userName");

@@ -61,7 +61,13 @@ const UploadVideo = () => {
 
   return (
     <>
-      <div className="page-container">
+      <div 
+        className="page-container" 
+        style={{
+          marginTop: !videoPath ? '20px' : '0px',
+          paddingTop: !videoPath ? '20px' : '0px',
+        }}
+      >
         {!videoPath && (
           <>
             <div 
@@ -70,7 +76,7 @@ const UploadVideo = () => {
                 width: '100%', 
                 alignItems: 'flex-start', 
                 justifyContent: 'center',
-                color: "white"
+                color: "black", 
               }}
             >
               <p style={{margin: 0, fontSize: 20}}>Upload from your device</p>
@@ -177,7 +183,7 @@ const UploadVideo = () => {
                   alignItems: 'center', 
                   gap: 10, 
                   fontSize: 20, 
-                  color: '#ccc',
+                  color: '#000000',
                   height: 30
                 }}
               >
@@ -266,7 +272,7 @@ const UploadVideo = () => {
                             width={renderedVideoWidth - (((editMode === 'sift' ? siftLeft : climberLeft) / 100) * renderedVideoWidth) - (((editMode === 'sift' ? siftRight : climberRight) / 100) * renderedVideoWidth)}
                             height={renderedVideoHeight - (((editMode === 'sift' ? siftTop : climberUp) / 100) * renderedVideoHeight) - (((editMode === 'sift' ? siftBottom : climberDown) / 100) * renderedVideoHeight)}
                             fill="none"
-                            stroke={editMode === 'sift' ? "#e4ff92" : "#007bff"}
+                            stroke={editMode === 'sift' ? "#85f71e" : "#85f71e"}
                             strokeWidth="3"
                           />
                         </svg>
@@ -274,7 +280,7 @@ const UploadVideo = () => {
                         <div
                           style={{
                             position: "absolute",
-                            top: -7,
+                            top: -10,
                             left: 0,
                             width: "100%",
                             height: 16, // increased height for offset
@@ -310,7 +316,7 @@ const UploadVideo = () => {
                             style={{
                               pointerEvents: "auto",
                               position: "absolute",
-                              top: -12,
+                              top: -10,
                               left: 0,
                               width: "100%",
                               height: 8,
@@ -393,7 +399,7 @@ const UploadVideo = () => {
                             style={{
                               pointerEvents: "auto",
                               position: "absolute",
-                              top: 25,
+                              top: 26,
                               left: 0,
                               width: renderedVideoHeight, // THIS SCALES WITH VIDEO
                               height: 8,
@@ -427,7 +433,7 @@ const UploadVideo = () => {
                             style={{
                               pointerEvents: "auto",
                               position: "absolute",
-                              top: 7,
+                              top: 8,
                               left: 0,
                               width: renderedVideoHeight, // THIS SCALES WITH VIDEO
                               height: 8,

@@ -17,7 +17,9 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
       <>
 
       <div className="home">
-        <h1 className="title">Route Scan</h1>
+        <div className="title">
+          <h1 >RouteScan</h1>
+          </div>
         <div className="login">
           {viewRegistration && <RegistrationForm />}
           {viewLogin && <LoginForm onLogin={() => setIsLoggedIn(true)} />}
@@ -27,7 +29,7 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
                 setViewRegistration(false);
                 setViewLogin(true);
               }}
-              style={{ color: "#e4ff92", cursor: "pointer", textDecoration: "underline" }}
+              style={{ color: "#ffffffff", cursor: "pointer", textDecoration: "underline", fontSize: 22  }}
             >
               Login
             </span>
@@ -38,7 +40,7 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
                 setViewRegistration(true);
                 setViewLogin(false);
               }}
-              style={{ color: "#e4ff92", cursor: "pointer", fontSize: 22 }}
+              style={{ color: "#ffffffff", cursor: "pointer", textDecoration: "underline", fontSize: 22 }}
             >
               Register
             </span>
@@ -52,6 +54,14 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
           className="demo-button"
         >
           Demo
+        </button>
+        <button className="demo-button">
+          <a 
+            href="/example-videos"
+            style={{color: "black"}}
+          >
+            Example Videos
+          </a>
         </button>
       </div>
 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UploadVideo from "./pages/UploadVideo";
 import Home from "./pages/Home";
 import Map from "./pages/Map";
+import ExampleVideos from "./pages/ExampleVideos";
 import Navbar from "./components/Navbar/Navbar";
 import "./App.css";
 import ViewRouteData from "./pages/ViewRouteData";
@@ -31,21 +32,6 @@ const App = () => {
     setLoginChecked(true);
   }, []);
 
-  useEffect(() => {
-    const clearTempOnUnload = () => {
-      if (sessionStorage.getItem("video_uploaded")) {
-        fetch(`${API}/api/clear-temp`, {
-          method: "DELETE",
-          keepalive: true  // so it works during page unload
-        });
-      }
-    };
-  
-    window.addEventListener("beforeunload", clearTempOnUnload);
-    return () => {
-      window.removeEventListener("beforeunload", clearTempOnUnload);
-    };
-  }, []);
 
   if (!loginChecked) return null; // or a loading spinner
 
@@ -59,6 +45,10 @@ const App = () => {
             element={
               <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
             }
+          />
+          <Route
+            path="/example-videos"
+            element={<ExampleVideos />}
           />
 
           {isLoggedIn && (

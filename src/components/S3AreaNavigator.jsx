@@ -11,7 +11,6 @@ export default function S3AreaNavigator({
   nodesTree = [],
   selectionPath = [],
   handleSelectPath,
-  userName, // <-- add this line
 }) {
   const locationIcon = "/assets/map_pin.png";
   const climberIcon  = "/assets/route_icon.jpg";
@@ -41,7 +40,6 @@ export default function S3AreaNavigator({
 
   return (
     <div style={{ margin: "16px 0" }}>
-      {/* Header */}
       <div style={{ marginBottom: 8 }}>
         {selectionPath.length > 0 && (
           <a
@@ -62,7 +60,6 @@ export default function S3AreaNavigator({
       {!allTimestamps && (
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {nodes.map((n) => {
-            // compute relative prefix (drop the user segment)
             const parts = n.path.split("/");
             const rel = parts.slice(1).join("/");
             return (
@@ -98,11 +95,6 @@ export default function S3AreaNavigator({
         </ul>
       )}
 
-      {allTimestamps && (
-        <p style={{ fontStyle: "italic", color: "#666" }}>
-          Route selected — timestamps should appear below.
-        </p>
-      )}
     </div>
   );
 }

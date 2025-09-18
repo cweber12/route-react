@@ -89,6 +89,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
   if (noFrames) return <p>No data recorded, try adjusting the parameters.</p>;
   if (fetchError) return <p>Reference frames not available ** process scheduling error **</p>;
 
+
   return (
     <div className="ref-frame-container">
       <Zoom>
@@ -119,7 +120,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         style={{
           width: "30px", 
           height: "30px", 
-          background:  "#c6ff1d",
+          background:  "#f8b014",
           borderRadius: "25%",
         
         }}
@@ -133,7 +134,7 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         style={{
           width: "30px", 
           height: "30px", 
-          background:  "#c6ff1d",
+          background:  "#f8b014",
           borderRadius: "25%",
         
         }} 

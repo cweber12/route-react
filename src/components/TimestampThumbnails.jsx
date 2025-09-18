@@ -17,34 +17,21 @@ export default function TimestampThumbnails({
   }
   const cleanBase = prefix.replace(/^\/+|\/+$/g, "");
 
-  // Remove expanded state, use local state for press/expand effect
-  const [pressed, setPressed] = useState(null);
 
-  // Helper to detect mobile (max-width: 480px)
-  const isMobile = () => window.matchMedia && window.matchMedia("(max-width: 480px)").matches;
-
-  // On mouse down, expand the card visually (desktop only)
-  const handleMouseDown = (name) => {
-    if (!isMobile()) setPressed(name);
-  };
   // On mouse up, toggle selection and remove expand effect
   const handleMouseUp = (name, folderUri) => {
-    if (!isMobile()) setPressed(null);
     onToggle(folderUri);
-  };
-  // On mouse leave, remove expand effect
-  const handleMouseLeave = () => {
-    setPressed(null);
   };
 
   return (
     <> 
     <div 
-    className="parent-container parent-container-row" 
-    style={{ 
-      width: "100%", 
-      justifyContent: "flex-start", 
-      alignItems: "center", 
+      className="parent-container parent-container-row" 
+      style={{ 
+        width: "100%", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        marginTop: "20px"
       }}
       >
       {[...timestamps].slice().reverse().map((t, idx) => {
@@ -53,7 +40,6 @@ export default function TimestampThumbnails({
         const url =
           `https://${bucketName}.s3.amazonaws.com/` +
           encodeURIComponent(key).replace(/%2F/g, "/");
-
         // Use a regex with capture groups for date formatting
         const label = t.name.replace(
           /^(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})$/,
@@ -61,15 +47,14 @@ export default function TimestampThumbnails({
         );
 
         const isChecked = checkedTimestamps.includes(folderUri);
-        const isPressed = pressed === t.name;
 
         return (
+          <>
+          
           <div
             key={t.name + '_' + idx}
             className={`child-container thumbnail recent-route-thumbnail${isChecked ? " thumbnail--selected thumbnail--highlight" : ""}`}
-            onMouseDown={() => handleMouseDown(t.name)}
             onMouseUp={() => handleMouseUp(t.name, folderUri)}
-            onMouseLeave={handleMouseLeave}
             tabIndex={0}
             role="button"
             aria-pressed={isChecked}
@@ -102,8 +87,11 @@ export default function TimestampThumbnails({
               />
             </div>
           </div>
+
+          </>
         );
       })}
+      
     </div>
     </>
   );

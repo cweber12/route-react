@@ -166,8 +166,8 @@ const ExtractPose = ({
         value={poseModel}
         onChange={(e) => setPoseModel(e.target.value)}
         style={{ 
-          height: "40px", 
-          width: "280px", 
+          height: "45px", 
+          width: "295px", 
           borderRadius: "4px", 
           fontSize: "20px", 
           fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
@@ -241,7 +241,7 @@ const ExtractPose = ({
       )}
         {processing && (
         <button
-          style={{borderRadius: "4px"}}
+          style={{borderRadius: "4px", background: "#f16a6f"}}
           onClick={handleCancel}>CANCEL
         </button>
       )}

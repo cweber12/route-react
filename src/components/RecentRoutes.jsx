@@ -55,8 +55,13 @@ const RecentRoutes = ({ onSelectAttempts, selectedAttempts = [], showCompare = f
     <>
       <div className="parent-container parent-container-column">
         <div className="page-header">
-          <h2>RECENT ROUTES</h2>
+          <h2>RECENT</h2>
         </div>
+        {!selectedAttempts.length && (
+          <div className="instructions">
+            <p>Select a recent route attempt. </p>
+          </div>
+        )}
         <div
           className="parent-container parent-container-row"
           style={{

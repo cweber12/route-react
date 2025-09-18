@@ -5,9 +5,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const [imageFile, setImageFile] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
-  const [processedImage, setProcessedImage] = useState(false);
-  const [preprocessImage, setPreprocessImage] = useState(false);
-  const [preprocessSteps, setPreprocessSteps] = useState("");
+  const [progress, setProgress] = useState(0); // Job progress (0-100%) 
   const [siftLeft, setSiftLeft] = useState(20);
   const [siftRight, setSiftRight] = useState(20);
   const [siftUp, setSiftUp] = useState(20);
@@ -33,8 +31,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     setImageFile(null);
     setSelectedBuiltInImage(null);
     setVideoUrl("");
-    setProcessedImage(false);
-    setPreprocessSteps("");
 
     try {
       await fetch(`${API}/api/clear-output`, { method: "POST" });
@@ -109,7 +105,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     console.log("imageFile passed to backend:", imageFile);
     formData.append("pose_lm_in", "");
     formData.append("sift_kp_in", "");
-    formData.append("preprocess", preprocessImage ? "true" : "false");
     formData.append("sift_left", siftLeft);
     formData.append("sift_right", siftRight);
     formData.append("sift_up", siftUp);
@@ -120,19 +115,72 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
       formData.append("s3_folders", s3Path.replace("s3://route-keypoints/", ""));
     });
     setProcessing(true);
+    setProgress(0);
     try {
+      // Step 1: Submit job
       const res = await fetch(`${API}/api/compare-image`, {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) throw new Error("Failed to process image.");
-      const data = await res.json();
-      setVideoUrl(`${API}${data.video_url}?t=${Date.now()}`);
-      setPreprocessSteps(data.steps || "");
-      setProcessedImage(true);
+      console.log("compare-image response status:", res.status);
+      const text = await res.text();
+      console.log("compare-image response text:", text);
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("Failed to parse JSON:", e);
+        throw new Error("Backend did not return valid JSON");
+      }
+      const jobId = data.job_id;
+      const statusUrl = `${API}${data.status_url}`;
+      console.log("Parsed jobId:", jobId, "statusUrl:", statusUrl);
+      if (!jobId) throw new Error("No job_id returned from backend");
+      // Step 2: Poll for status
+      let pollCount = 0;
+      let videoUrlFound = null;
+      while (pollCount < 120) { // up to 4 minutes
+        pollCount++;
+        await new Promise(r => setTimeout(r, 2000));
+        let statusRes;
+        try {
+          statusRes = await fetch(statusUrl);
+        } catch (err) {
+          console.error("Error polling status:", err);
+          continue;
+        }
+        if (!statusRes.ok) {
+          console.warn("Status response not ok:", statusRes.status);
+          continue;
+        }
+        let statusData;
+        try {
+          const statusText = await statusRes.text();
+          console.log("Status response text:", statusText);
+          statusData = JSON.parse(statusText);
+        } catch (e) {
+          console.error("Failed to parse status JSON:", e);
+          throw new Error("Backend did not return valid status JSON");
+        }
+
+        if (statusData.progress) {
+          setProgress(statusData.progress);
+        }
+
+        if (statusData.status === "success" && statusData.video_url) {
+          videoUrlFound = `${API}${statusData.video_url}?t=${Date.now()}`;
+          break;
+        }
+        if (statusData.status === "failed") {
+          throw new Error("Video processing failed");
+        }
+      }
+      if (!videoUrlFound) throw new Error("Timed out waiting for video");
+      setVideoUrl(videoUrlFound);
+      console.log("Video URL set to:", videoUrlFound);
     } catch (err) {
       console.error("Error processing image:", err);
-      alert("Error processing image.");
+      alert("Error processing image: " + (err.message || err));
     } finally {
       setProcessing(false);
     }
@@ -145,8 +193,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     setSelectedBuiltInImage(s3Uri);
     setImageFile(null);
     setVideoUrl("");
-    setProcessedImage(false);
-    setPreprocessSteps("");
     // Always reset the file input when switching to built-in image
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -183,13 +229,14 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           setVideoReady(true);
           clearInterval(pollIntervalRef.current);
         }
-      } catch (e) {
+      } catch {
         // ignore, keep polling
       }
     }, 2000); // poll every 2 seconds
   }, []);
 
   // When videoUrl changes, start polling
+
   React.useEffect(() => {
     if (videoUrl) {
       pollForVideo(videoUrl);
@@ -202,10 +249,24 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
     };
   }, [videoUrl, pollForVideo]);
 
+
   return (
    <>
-   {selectedS3PathArray && selectedS3PathArray.length > 0 && (
-          <div className="compare-buttons-row">
+   {!videoUrl && imageFile && userName === "Demo" && !processing && (
+      <div className="instructions"> 
+        <p>Move the sliders to highlight the route, then press "Scan Image"</p>
+      </div>
+   )}    
+    {selectedS3PathArray && selectedS3PathArray.length > 0 && (
+      <div 
+        className="parent-container parent-container-row" 
+        style={{
+          alignItems: "flex-start", 
+          justifyContent: "space-between", 
+          width: "100%"
+        }}
+      >
+      <div className="compare-buttons-col">
 
             {userName == "Demo" && (
             <select
@@ -214,15 +275,16 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               value={selectedBuiltInImage || ""}
               onChange={handleBuiltInImageSelect}
             >
-              <option value="">Select a sample image...</option>
-              <option value="s3://route-keypoints/sample-images/AScannerDarkly.jpg">AScannerDarkly.jpg</option>
-              <option value="s3://route-keypoints/sample-images/Bloodline.jpg">Bloodline.jpg</option>
+              <option value="">DEMO IMAGES</option>
               <option value="s3://route-keypoints/sample-images/IronManTraverse.JPG">IronManTraverse.jpg</option>
-              <option value="s3://route-keypoints/sample-images/KingAir.jpg">KingAir.jpg</option>
+              <option value="s3://route-keypoints/sample-images/KingAir2.jpg">KingAir.jpg</option>
+               <option value="s3://route-keypoints/sample-images/MazeOfDeath2.jpg">MazeOfDeath.jpg</option>
               <option value="s3://route-keypoints/sample-images/midnight lightning yosemite.jpg">MidnightLightning.jpg</option>
-              <option value="s3://route-keypoints/sample-images/Moonraker.jpg">Moonraker.jpg</option>
-              <option value="s3://route-keypoints/sample-images/ThunderRollsSDS.jpg">ThunderRollsSDS.jpg</option>
+              <option value="s3://route-keypoints/sample-images/moonraker3.jpg">Moonraker.jpg</option>
+              <option value="s3://route-keypoints/sample-images/phantommenace.jpg">PhantomMenace.jpg</option>
+              <option value="s3://route-keypoints/sample-images/AScannerDarkly2.jpg">ScannerDarkly_A.jpg</option>
               <option value="s3://route-keypoints/sample-images/Slashface3.png">Slashface.png</option>
+             
             </select>
             )}
              <label 
@@ -244,20 +306,29 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               disabled={processing || (!imageFile && !selectedBuiltInImage)}
               className={processing ? "processing process-button" : "process-button"}
             >
-              Scan Image
+              {processing ? "Scanning..." : "Scan Image"}
             </button>
           </div>
-        )}
+
+        
+
       <div 
         className="parent-container parent-container-column"
-        style={{alignItems: "center", justifyContent: "center", width: "100%"}}
+        style={{alignItems: "center", justifyContent: "center", width: "60%"}}
       >
+    {processing && (
+      <div style={{ width: "100%", maxWidth: 600, margin: "12px 0", textAlign: "left", color: "white" }}>
+        <div style={{ marginBottom: 8, fontWeight: 600}}>Progress: {Math.round(progress)}%</div>
+        <div style={{ background: "#e6e6e6", height: 12, borderRadius: 6, overflow: "hidden" }}>
+          <div style={{ width: `${progress}%`, height: "100%", background: "#85F71E", transition: "width 400ms ease" }} />
+        </div>
+      </div>
+    )}
         { /* Display output video */}
         {videoUrl && (
           videoReady ? (
             <video 
               className="media" 
-              style={{ width: "100%", height: "auto", maxHeight: "500px", alignSelf: "center" }}
               controls 
             >
               <source src={videoUrl} type="video/mp4" />
@@ -266,17 +337,22 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           ) : (
             <div 
               style={{
-                color: '#c6ff1d', 
+                color: 'white', 
                 fontSize: 20, 
                 padding: 0, 
                 textAlign: 'center', 
                 fontFamily: 'Courier New, monospace',
                 }}>
-              Processing video, please wait...
+              Generating video...
             </div>
           )
         )}
-      
+ 
+        {!imageFile && userName === "Demo" && (
+          <div className="instructions">
+            <p>Find an image of the selected route.</p>
+          </div>
+        )}
         {/* SIFT sliders and image preview */}
         {imageFile && !videoUrl && (
           <div className="compare-image-preview-container">
@@ -318,10 +394,10 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                       width={w}
                       height={h}
                       fill="none"
-                      stroke="#39ff14"
+                      stroke="#85F71E"
                       strokeWidth="3"
                       rx="6"
-                      style={{ filter: hover ? "drop-shadow(0 0 6px #39ff14)" : undefined, transition: "filter 0.2s" }}
+                      style={{ filter: hover ? "drop-shadow(0 0 6px #85F71E)" : undefined, transition: "filter 0.2s" }}
                     />
                   );
                 })()}
@@ -330,7 +406,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: -7,
+                  top: -12,
                   left: 0,
                   width: "100%", // always match rendered image width
                   height: 32, // increased height to make touch easier
@@ -381,7 +457,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                   style={{
                     pointerEvents: "auto",
                     position: "absolute",
-                    top: -25,
+                    top: -30,
                     left: 0,
                     width: "100%", // always match rendered image width
                     height: 8,
@@ -394,7 +470,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                 style={{
                   position: "absolute",
                   top: 0,
-                  left: 0,
+                  left: -5,
                   width: 32, // increased width to make touch easier
                   height: renderedImgDims.height, // match rendered image height
                   zIndex: 30,
@@ -421,7 +497,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                   style={{
                     pointerEvents: "auto",
                     position: "absolute",
-                    top: 20,
+                    top: 25,
                     left: 0,
                     width: renderedImgDims.height,
                     height: 8,
@@ -459,7 +535,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         {imageFile && !videoUrl && (
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', margin: '0', justifyContent: 'flex-start' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 500, color: '#c6ff1d' }}>Line Color:</span>
+              <span style={{ fontWeight: 500, color: 'white' }}>Line Color:</span>
               <input
                 type="color"
                 value={lineColor}
@@ -469,7 +545,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               />
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 500, color: '#c6ff1d' }}>Point Color:</span>
+              <span style={{ fontWeight: 500, color: 'white' }}>Point Color:</span>
               <input
                 type="color"
                 value={pointColor}
@@ -482,6 +558,8 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         )}
 
         </div>
+      </div>
+      )}
     </>
   );
 };
