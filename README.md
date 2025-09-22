@@ -1,77 +1,84 @@
-# FRONTEND
-# __________________________________________________________________________________________
-
-# Running the frontend
-
-npm run dev
-
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-# Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
 
-# BACKEND
-# __________________________________________________________________________________________
+# RouteMap Frontend
 
-# Running the Backend 
+## Description
 
- uvicorn app.main:app --reload 
+This is the frontend for the RouteMap application, built with React and Vite. It allows users to upload climbing route videos, process them for pose and feature detection, and view saved route data and images. The app integrates with an S3 bucket for storing images and route data, and communicates with a FastAPI backend for processing and data management.
 
-# Backend Testing
+---
 
-Swagger (interactive): http://localhost:8000/docs
+## Setup
 
-Redoc (read-only): http://localhost:8000/redoc
+Before running the frontend, make sure you:
 
-# Docker CLI Prompts
+1. **Install dependencies:**
 
-BUILD:              docker build -t climb-api . 
+```bash
+npm install
+```
 
-RUN:                docker run -d --name climb-api -p 80:80 --env-file .\.env -v C:\Users\coled\reptrac\backend\temp_uploads:/app/ temp_uploads climb-api
-        
-STOP IMG:           docker stop climb-api 
+2. **Configure environment variables:**
 
-REMOVE IMG:         docker rm   climb-api
+- Copy `.env.example` to `.env` (if provided) and update API base URLs and any required keys.
+- Example variables:
 
-GET IMG ID:         docker ps -a 
+```env
+VITE_API_BASE_URL_M=http://localhost:8000
+VITE_API_BASE_URL_P=http://localhost:8000
+```
 
-GET LOGS:           docker logs -f climb-api 
+3. **Start the backend server:**
 
-# Elastic Beanstalk CLI
+- The frontend expects the FastAPI backend to be running on the URLs specified above.
 
-eb deploy 
+4. **Build static assets (optional for production):**
 
-# ECR
+```bash
+npm run build
+```
 
-TAG THE IMAGE:      docker tag climb-api:latest 537124934274.dkr.ecr.us-east-2.amazonaws.com/climb-api:latest
+You are now ready to run the frontend!
 
-PUSH TO ECR:        docker push 537124934274.dkr.ecr.us-east-2.amazonaws.com/climb-api:latest
+## Uploading and Processing a Video
 
+On the UploadVideo page, users can:
 
-#### PUSH TO EC2
-scp -i "C:\Projects\RouteMap\route-map-server.pem" -r C:\Projects\routemap-ec2\frontend ec2-user@3.14.149.218:/home/ec2-user/
+- Upload a climbing video from their device or download one from YouTube.
+- Adjust detection areas for the route and climber using interactive sliders overlaid on the video.
+- Select pose detection models and processing options (contrast, brightness, sharpening, etc.).
+- Process the video to extract pose and feature data, which is then sent to the backend for analysis.
+- Preview reference frames and save processed route data to S3.
 
+**Workflow:**
 
-### PUSH TO S3
-aws s3 sync .\dist\ s3://routemap-react-app/ --delete 
+1. Upload or select a video.
+2. Adjust crop areas for route and climber.
+3. Choose model and processing settings.
+4. Click "Scan Video" to process.
+5. Preview results and save to S3.
 
+## Viewing Saved Routes
 
-### DEMO LOGIN
+On the ViewRouteData page, users can:
 
-Username: Demo
-Password: RouteScan12345
+- Browse saved routes and areas using a dropdown navigator and search bar.
+- Select a route to view available timestamped images and data.
+- Select images to compare route features and pose data.
+- Use search suggestions to quickly find routes or areas.
 
-### COLORS
+**Workflow:**
 
-Container BG: #121623
-Highlight Text: #c6ff1d
-Border: #333F6C
+1. Use the dropdown or search bar to select an area or route.
+2. View and select timestamped images to pull pose and SIFT data stored in S3.
+3. Find an image of the selected route
+4. Select "Scan Image" to match stored SIFT features with detected features in the image.
+5. Output video is generated to visualize the selected attempt
+
+## Deploy to S3
+
+This command uploads the contents of your local `dist` folder (the production build) to your S3 bucket (`routemap-react-app`). It will synchronize all files and remove any files from the bucket that no longer exist locally. Run this after building your frontend to update the live site.
+
+```bash
+aws s3 sync .\dist\ s3://routemap-react-app/ --delete
+```
