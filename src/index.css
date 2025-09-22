@@ -50,7 +50,7 @@ body {
 }
 
 button { 
-  background-color:chartreuse;
+  background-color: #8fce00;;
   font-size: 20px;
   font-weight: 500; 
   color: black;
@@ -68,23 +68,15 @@ button {
 }
 
 button:hover {
-  background: rgb(173, 255, 210);
+  background: #628b00;
   color: black; 
 }
  
-
 
 button:disabled {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
-}
-
-.process-button {
-  background: #8fce00;
-}
-.process-button:hover {
-  background: #628b00;
 }
 
 html {  

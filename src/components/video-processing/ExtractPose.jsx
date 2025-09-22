@@ -127,14 +127,13 @@ const ExtractPose = ({
   return (
     <>
       <div className="parent-container parent-container-column" >
-        <div className="compare-buttons-row">
+        <div className="compare-buttons-col">
           <select
             id="poseModel"
             value={poseModel}
             onChange={(e) => setPoseModel(e.target.value)}
             style={{ 
-              height: "45px", 
-              width: "295px", 
+              height: "40px", 
               borderRadius: "4px", 
               fontSize: "20px", 
               fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
@@ -151,20 +150,28 @@ const ExtractPose = ({
           <button
             onClick={() => {
               setShowParams(!showParams);
-              setShowSiftSliders(!showSiftSliders); // <-- add this
+              setShowSiftSliders(!showSiftSliders); 
             }}
+            className="settings-button" 
           >
             Toggle Settings
           </button>
 
           <button
             onClick={handleProcessVideo}
-            className={processing ? "processing process-button" : "process-button"}
             style={{borderRadius: "4px", padding: 0}}
             disabled={!videoPath || loading || processing}
           >
-            {processing ? "Scanning..." : "Scan Video"}              
+            {processing ? `${processingStatus}` : "Scan Video"}              
           </button>
+          {processing && (
+          <>
+            <button
+              style={{borderRadius: "4px", background: "#f16a6f", width: "100%"}}
+              onClick={handleCancel}>CANCEL
+            </button>
+          </>
+        )}
         </div>
         {showParams && (
           <div className="child-container child-container-column" 
@@ -205,18 +212,7 @@ const ExtractPose = ({
             />
           </div>
         )}
-        {processing && (
-          <div 
-            className="child-container child-container-row"
-            style={{gap: "20px", alignItems: "center", justifyContent: "center", color: "white"}}
-          >
-            <button
-              style={{borderRadius: "4px", background: "#f16a6f"}}
-              onClick={handleCancel}>CANCEL
-            </button>
-            <p>{processingStatus}</p>
-          </div>
-        )}
+        
       </div>
     </>
   );

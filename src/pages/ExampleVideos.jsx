@@ -21,15 +21,15 @@ const ExampleVideos = () => {
             </div>
 
             <video className="example-video" controls>
-                <source src="/assets/AScannerDarkly.mp4" type="video/mp4" />
+                <source src="/assets/example-videos/AScannerDarkly.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             <video className="example-video" controls>
-                <source src="/assets/PhantomMenace.mp4" type="video/mp4" />
+                <source src="/assets/example-videos/PhantomMenace.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             <video className="example-video" controls>
-                <source src="/assets/MoonRaker.mp4" type="video/mp4" />
+                <source src="/assets/example-videos/MoonRaker.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
 

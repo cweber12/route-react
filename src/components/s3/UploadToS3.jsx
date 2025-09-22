@@ -128,17 +128,16 @@ const UploadToS3 = ({
     if (areaOptions.length === 0 && routeOptions.length > 0) return null;
 
     return (
-      <div className="parent-container parent-container-column" 
-      style={{ width: "100%", justifyContent: "flex-start", alignItems: "flex-start", textAlign: "center" }}>
-        
+      <>
+       
         {parentName && (
           <>
-          <div style={{ display: "flex", flexDirection: "row"}}>
+          <div style={{ display: "flex", flexDirection: "row", gap: 20}}>
             {grandparentPath.length > 0 && (
-              <span
-                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 20}}
+              <button
+                className="settings-button"
                 onClick={() => setSelectionPath(grandparentPath)}
-              >← Prev Area</span>
+              >← Prev</button>
             )}
             <p style={{color: "white", margin: 0, fontSize: "20px"}}>{parentName}</p>
           </div>
@@ -156,7 +155,7 @@ const UploadToS3 = ({
             }
           }}
           value=""
-          style={{ padding: 8, width: "60%" }}
+          style={{ padding: 8, height: 40}}
         >
           <option value="">Select an Area</option>
           {areaOptions.map((n) => (
@@ -165,58 +164,62 @@ const UploadToS3 = ({
             </option>
           ))}
         </select>
-      </div>
+      </>
     );
   };
 
   const renderRoutes = () => {
-    let nodes = treeData;
-    for (let level = 0; level < selectionPath.length; level++) {
-      const sel = selectionPath[level];
-      const curr = nodes.find((n) => n.name === sel);
-      if (!curr) return null;
-      nodes = curr.children || [];
-    }
-    const routes = nodes.filter((n) => n.type === "route");
-    if (!routes.length) return null;
+  let nodes = treeData;
+  for (let level = 0; level < selectionPath.length; level++) {
+    const sel = selectionPath[level];
+    const curr = nodes.find((n) => n.name === sel);
+    if (!curr) return null;
+    nodes = curr.children || [];
+  }
+  const routes = nodes.filter((n) => n.type === "route");
+  if (!routes.length) return null;
 
-    const parentName = selectionPath.slice(-1)[0];
-    const grandparent = selectionPath.slice(0, -1);
-    return (
-      <div className="parent-container parent-container-row" style={{width: "100%", justifyContent: "flex-start" }}>
-        {parentName && (
-          <>
-            {grandparent.length > 0 && (
-              <span
-                style={{ background: "rgba(120, 190, 255, 0.5)", color: "white", cursor: "pointer", padding: "8px 10px", borderRadius: 4, marginRight: 20}}
-                onClick={() => setSelectionPath(grandparent)}
-              >← Prev Area</span>
-            )}
-            <p style={{color: "white", margin: 0}}>{parentName}</p>
-          </>
-        )}
-        <select
-          onChange={(e) => {
-            const route = routes.find((r) => r.url === e.target.value);
-            if (route) {
-              setRouteName(route.name);
-              window.open(route.url, "_blank");
-            }
-          }}
-          style={{ padding: 8, width: "60%"}}
-        >
-          <option value="">-- Select Route --</option>
-          {routes.map((r) => (
-            <option key={r.id} value={r.url}>
-              {r.name} ({r.yds_rating})
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
+  const parentName = selectionPath.slice(-1)[0];
+  const grandparent = selectionPath.slice(0, -1);
 
-  // --- handle actual S3 upload (unchanged) ---
+  return (
+    <>
+      {parentName && (
+        <div style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+          {grandparent.length > 0 && (
+            <button
+              className="settings-button"
+              onClick={() => setSelectionPath(grandparent)}
+            >
+              ← Prev
+            </button>
+          )}
+          <p style={{ color: "white", margin: 0, fontSize: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{parentName}</p>
+        </div>
+      )}
+      <select
+        onChange={(e) => {
+          const route = routes.find((r) => r.name === e.target.value);
+          if (route) {
+            setRouteName(route.name);
+            window.open(route.url, "_blank");
+          }
+        }}
+        value=""
+        style={{ padding: 8, height: 40 }}
+      >
+        <option value="">Select a Route</option>
+        {routes.map((r) => (
+          <option key={r.id || r.name} value={r.name}>
+            {r.name} ({r.yds_rating})
+          </option>
+        ))}
+      </select>
+    </>
+  );
+};
+
+  // --- handle actual S3 upload ---
   const handleUploadToS3 = async () => {
     const fullPath = selectionPath.join("/");
     const fd = new FormData();
@@ -262,13 +265,17 @@ const UploadToS3 = ({
 
   return (
     <>
-          {/* Show route name under search bar if selected */}
+    
+    <div className="compare-buttons-col">
+      {renderDropdowns()}
+      {renderRoutes()}
+      {/* Show route name under search bar if selected */}
       {routeName && (
         <div style={{margin: '12px 0 0 0', color: 'white', fontWeight: 600, fontSize: 20, textAlign: 'left'}}>
-          Selected Route: {routeName}
+          {routeName}
         </div>
       )}
-      {/* --- SEARCH BAR (fixed top left) & SAVE BUTTON (right of search bar) --- */}
+      {/* --- SEARCH BAR & SAVE BUTTON --- */}
       <div 
       className="search-container"
       style={{justifyContent: "space-between"}}
@@ -328,25 +335,6 @@ const UploadToS3 = ({
           <button
             onClick={handleUploadToS3}
             disabled={uploadingS3 || !selectionPath.length || !routeName}
-            style={{
-              marginLeft: 10,
-              height: 40,
-              width: "35%",
-              backgroundColor:
-                uploadingS3 || !selectionPath.length || !routeName
-                  ? "#333"
-                  : "#007bff",
-              color: "#fff",
-              padding: "0 18px",
-              border: "none",
-              borderRadius: 4,
-              cursor:
-                uploadingS3 || !selectionPath.length || !routeName
-                  ? "not-allowed"
-                  : "pointer",
-              fontWeight: 600,
-              fontSize: 16,
-            }}
           >
             {uploadingS3 ? "Saving..." : "Save"}
           </button>
@@ -354,10 +342,8 @@ const UploadToS3 = ({
 
         {processingStatus && !uploadingS3 && (
           <p style={{ 
-            color: "#c6ff1d", 
-            fontFamily: "Courier New, monospace",
+            color: "chartreuse", 
             padding: 4, 
-            fontSize: "18px",
             alignSelf: "center"
           }}>{processingStatus}</p>
         )}
@@ -376,15 +362,13 @@ const UploadToS3 = ({
           boxSizing: "border-box",
           border: "1px solid #888",
           borderRadius: 4,
-          height: 35,
+          height: 40,
           fontSize: 16,
 
         }}
       />
-
-      {renderDropdowns()}
-      {renderRoutes()}
       
+      </div>
     </>
   );
 };

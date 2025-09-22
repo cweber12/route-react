@@ -60,8 +60,9 @@ const UploadVideo = () => {
       <div 
         className="page-container" 
         style={{
-          marginTop: !videoPath ? '20px' : '0px',
+          marginTop: !videoPath ? '20vh' : '0px',
           paddingTop: !videoPath ? '20px' : '0px',
+          
         }}
       >
         {!videoPath && (
@@ -72,12 +73,18 @@ const UploadVideo = () => {
                 width: '100%', 
                 alignItems: 'flex-start', 
                 justifyContent: 'center',
-                color: "black", 
+                color: "white",
+                fontSize: "20px", 
+                fontWeight: "500",
+
               }}
             >
-              <p style={{margin: 0, fontSize: 20}}>Upload from your device</p>
+              <div className="page-header" style={{paddingTop: 0}}> 
+                <h1>Upload a Video</h1>
+              </div>
+              <p style={{margin: 0}}>Upload from your device</p>
               <Upload setVideoPath={setVideoPath} setVideoUrl={setVideoUrl} />
-              <p style={{margin: 0, fontSize: 20}}>
+              <p style={{margin: 0}}>
                 Find a video on YouTube
                 <a
                   href="https://www.youtube.com"
@@ -115,7 +122,6 @@ const UploadVideo = () => {
                   role="button"
                   tabIndex={0}
                   aria-label="Crop Info"
-             
                 />
                 </div>
 
@@ -140,7 +146,10 @@ const UploadVideo = () => {
               </div>
             )}
 
-            <div className="parent-container parent-container-row">
+            <div 
+              className="parent-container parent-container-row"
+              style={{justifyContent: "center"}}
+            >
               <button
                 onClick={() => setEditMode('sift')}
                 style={{
@@ -179,7 +188,7 @@ const UploadVideo = () => {
                   alignItems: 'center', 
                   gap: 10, 
                   fontSize: 20, 
-                  color: '#000000',
+                  color: 'white',
                   height: 30
                 }}
               >
@@ -189,11 +198,10 @@ const UploadVideo = () => {
                   style={{ 
                     marginRight: 0, 
                     width: 30, 
-                    height: 30 
+                    height: 30,
                   }}
                   onChange={e => setIsStatic(e.target.checked)}
                 />
-                Static Video
               </label>
             </div>
             <div className="parent-container parent-container-row" style={{ width: "100%", alignItems: "flex-start", justifyContent: "center", gap: 20 }}>
@@ -265,7 +273,7 @@ const UploadVideo = () => {
                             width={renderedVideoWidth - (((editMode === 'sift' ? siftLeft : climberLeft) / 100) * renderedVideoWidth) - (((editMode === 'sift' ? siftRight : climberRight) / 100) * renderedVideoWidth)}
                             height={renderedVideoHeight - (((editMode === 'sift' ? siftTop : climberUp) / 100) * renderedVideoHeight) - (((editMode === 'sift' ? siftBottom : climberDown) / 100) * renderedVideoHeight)}
                             fill="none"
-                            stroke={editMode === 'sift' ? "#85f71e" : "#85f71e"}
+                            stroke="chartreuse"
                             strokeWidth="3"
                           />
                         </svg>
@@ -487,6 +495,14 @@ const UploadVideo = () => {
               </div>
             )}
 
+            {poseFilePath && !loading && videoUrl && (
+              <ViewRefFrames
+                poseFilePath={poseFilePath}
+                siftFilePath={siftFilePath}
+                setAutoRefFramePath={setAutoRefFramePath}
+              />
+            )}
+
             <ExtractPose
               videoPath={videoPath}
               userName={userName}
@@ -506,14 +522,6 @@ const UploadVideo = () => {
               isStatic={isStatic}
             />
           </>
-        )}
-
-        {poseFilePath && !loading && videoUrl && (
-          <ViewRefFrames
-            poseFilePath={poseFilePath}
-            siftFilePath={siftFilePath}
-            setAutoRefFramePath={setAutoRefFramePath}
-          />
         )}
 
         {poseFilePath && siftFilePath && !loading && showS3Upload && (

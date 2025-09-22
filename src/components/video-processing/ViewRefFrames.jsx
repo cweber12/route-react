@@ -114,13 +114,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         src="assets/left.png"
         alt="Previous Frame"
         className="switch-icon"
-        style={{
-          width: "30px", 
-          height: "30px", 
-          background:  "#f8b014",
-          borderRadius: "25%",
-        
-        }}
         onClick={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
         />
         <p style={{color: "white"}}>{currentFrameNum}</p>
@@ -128,13 +121,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         src="assets/right.png"
         alt="Next Frame"
         className="switch-icon"
-        style={{
-          width: "30px", 
-          height: "30px", 
-          background:  "#f8b014",
-          borderRadius: "25%",
-        
-        }} 
         onClick={() => setCurrentIndex((prev) => (prev + 1) % images.length)}
         />
         <input
@@ -152,15 +138,14 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
 
       {omitFrames.length > 0 && (
         <>       
-          <span style={{display: "flex", alignItems: "flex-start", justifyContent: "flex-start", gap: "10px"}}>
           <button 
+            style={{width: "90%", maxWidth: "400px"}}
             onClick={submitOmittedFrames}
             disabled={omitting}
           >
             Omit Frames
           </button>
-          </span>
-          <p style={{color: "white"}}>Omitted Frames: {omitFrames.join(", ")}</p>
+          <p style={{color: "white"}}>Frames to Omit: {omitFrames.join(", ")}</p>
         </>        
       )}
 
