@@ -252,78 +252,38 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
 
   return (
    <>
-   {!videoUrl && imageFile && userName === "Demo" && !processing && (
-      <div className="instructions"> 
-        <p>Move the sliders to highlight the route, then press "Scan Image"</p>
-      </div>
-   )}    
+    {!imageFile && userName === "Demo" && (
+          <div className="instructions">
+            <p>Find an image of the selected route.</p>
+          </div>
+        )}
+    {!videoUrl && imageFile && userName === "Demo" && !processing && (
+        <div className="instructions"> 
+          <p>Move the sliders to highlight the route, then press "Scan Image"</p>
+        </div>
+    )}    
     {selectedS3PathArray && selectedS3PathArray.length > 0 && (
       <div 
-        className="parent-container parent-container-row" 
+        className="parent-container parent-container-column"
         style={{
-          alignItems: "flex-start", 
-          justifyContent: "space-between", 
+          alignItems: "center",
+          justifyContent: "space-between",
           width: "100%"
         }}
       >
-      <div className="compare-buttons-col">
-
-            {userName == "Demo" && (
-            <select
-              className="built-in-image-select"
-              id="built-in-image-select"
-              value={selectedBuiltInImage || ""}
-              onChange={handleBuiltInImageSelect}
-            >
-              <option value="">DEMO IMAGES</option>
-              <option value="s3://route-keypoints/sample-images/IronManTraverse.JPG">IronManTraverse.jpg</option>
-              <option value="s3://route-keypoints/sample-images/KingAir2.jpg">KingAir.jpg</option>
-              <option value="s3://route-keypoints/sample-images/MazeOfDeath2.jpg">MazeOfDeath.jpg</option>
-              <option value="s3://route-keypoints/sample-images/midnight lightning yosemite.jpg">MidnightLightning.jpg</option>
-              <option value="s3://route-keypoints/sample-images/moonraker3.jpg">Moonraker.jpg</option>
-              <option value="s3://route-keypoints/sample-images/phantommenace.jpg">PhantomMenace.jpg</option>
-              <option value="s3://route-keypoints/sample-images/AScannerDarkly2.jpg">ScannerDarkly_A.jpg</option>
-              <option value="s3://route-keypoints/sample-images/Slashface3.png">Slashface.png</option>
-             
-            </select>
-            )}
-             <label 
-              htmlFor="image-upload" 
-              className="button-label"
-            >
-              Image Files
-            </label>
-            <input
-              id="image-upload"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-              ref={fileInputRef}
-            />
-            <button 
-              onClick={handleProcess} 
-              disabled={processing || (!imageFile && !selectedBuiltInImage)}
-              className={processing ? "processing process-button" : "process-button"}
-            >
-              {processing ? "Scanning..." : "Scan Image"}
-            </button>
-          </div>
-
-        
 
       <div 
         className="parent-container parent-container-column"
-        style={{alignItems: "center", justifyContent: "center", width: "60%"}}
+        style={{alignItems: "center", justifyContent: "center", width: "100%"}}
       >
-    {processing && (
-      <div style={{ width: "100%", maxWidth: 600, margin: "12px 0", textAlign: "left", color: "white" }}>
-        <div style={{ marginBottom: 8, fontWeight: 600}}>Progress: {Math.round(progress)}%</div>
-        <div style={{ background: "#e6e6e6", height: 12, borderRadius: 6, overflow: "hidden" }}>
-          <div style={{ width: `${progress}%`, height: "100%", background: "#85F71E", transition: "width 400ms ease" }} />
-        </div>
-      </div>
-    )}
+        {processing && (
+          <div style={{ width: "100%", margin: "12px 0", textAlign: "left", color: "white" }}>
+            <div style={{ marginBottom: 8, fontWeight: 600}}>Progress: {Math.round(progress)}%</div>
+            <div style={{ background: "#e6e6e6", height: 12, borderRadius: 6, overflow: "hidden" }}>
+              <div style={{ width: `${progress}%`, height: "100%", background: "#85F71E", transition: "width 400ms ease" }} />
+            </div>
+          </div>
+        )}
         { /* Display output video */}
         {videoUrl && (
           videoReady ? (
@@ -341,27 +301,21 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
                 fontSize: 20, 
                 padding: 0, 
                 textAlign: 'center', 
-                fontFamily: 'Courier New, monospace',
                 }}>
               Generating video...
             </div>
           )
         )}
  
-        {!imageFile && userName === "Demo" && (
-          <div className="instructions">
-            <p>Find an image of the selected route.</p>
-          </div>
-        )}
         {/* SIFT sliders and image preview */}
         {imageFile && !videoUrl && (
           <div className="compare-image-preview-container">
-            <div style={{ position: "relative", maxWidth: 500, margin: "0" }}>
+            <div style={{ position: "relative", margin: "0" }}>
               <img
                 ref={imgRef}
                 src={imageUrl}
                 alt="Selected"
-                style={{ width: "100%", height: "auto", display: "block", maxWidth: 500, borderRadius: "4px" }}
+                style={{ width: "100%", height: "auto", display: "block", borderRadius: "4px" }}
                 onLoad={e => { handleImageLoad(e); handleRenderedImgResize(); }}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
@@ -558,6 +512,49 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         )}
 
         </div>
+        <div className="compare-buttons-col">
+
+        {userName == "Demo" && (
+          <select
+            className="built-in-image-select"
+            id="built-in-image-select"
+            value={selectedBuiltInImage || ""}
+            onChange={handleBuiltInImageSelect}
+          >
+            <option value="">DEMO IMAGES</option>
+            <option value="s3://route-keypoints/sample-images/IronManTraverse.JPG">IronManTraverse.jpg</option>
+            <option value="s3://route-keypoints/sample-images/KingAir2.jpg">KingAir.jpg</option>
+            <option value="s3://route-keypoints/sample-images/MazeOfDeath2.jpg">MazeOfDeath.jpg</option>
+            <option value="s3://route-keypoints/sample-images/midnight lightning yosemite.jpg">MidnightLightning.jpg</option>
+            <option value="s3://route-keypoints/sample-images/moonraker3.jpg">Moonraker.jpg</option>
+            <option value="s3://route-keypoints/sample-images/phantommenace.jpg">PhantomMenace.jpg</option>
+            <option value="s3://route-keypoints/sample-images/AScannerDarkly2.jpg">ScannerDarkly_A.jpg</option>
+            <option value="s3://route-keypoints/sample-images/Slashface3.png">Slashface.png</option>
+            
+          </select>
+        )}
+        <label 
+          htmlFor="image-upload" 
+          className="button-label"
+        >
+          Image Files
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+          ref={fileInputRef}
+        />
+        <button 
+          onClick={handleProcess} 
+          disabled={processing || (!imageFile && !selectedBuiltInImage)}
+          className="process-button"
+        >
+          {processing ? "Scanning..." : "Scan Image"}
+        </button>
+      </div>
       </div>
       )}
     </>

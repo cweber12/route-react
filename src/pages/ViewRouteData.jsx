@@ -224,7 +224,7 @@ const ViewRouteData = () => {
             <p>Use the dropdown to select an area, or enter a route name in the search bar.</p>
           </div>
         )}
-        <div className="area-navigator-row">
+        <div className="area-navigator-col">
 
             {treeData.length > 0 && (
               <>

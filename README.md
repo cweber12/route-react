@@ -1,5 +1,3 @@
-
-
 # RouteMap Frontend
 
 ## Description
@@ -82,3 +80,24 @@ This command uploads the contents of your local `dist` folder (the production bu
 ```bash
 aws s3 sync .\dist\ s3://routemap-react-app/ --delete
 ```
+
+## Map Page
+
+The Map page provides a visual overview of climbing routes and areas using interactive map pins. It uses Leaflet.js to display a map with:
+
+- Pins for each route and area stored in the route database (not the user's personal saved routes).
+- A special icon for the user's current location (if geolocation is enabled).
+- A legend explaining the map icons.
+- Popups for each route pin showing the route name and grade.
+
+**How it works:**
+
+- On page load, the app attempts to center the map on the user's location (if available), otherwise defaults to Denver, CO.
+- It fetches route and area data from the backend and displays pins for each valid route/area.
+- Clicking a pin shows details about the route or area.
+
+**Limitations:**
+
+- The map is not fully functional and does **not** reflect the user's saved routes or custom data.
+- Only routes and areas present in the backend route database are shown.
+- No editing, saving, or custom overlays are currently supported.

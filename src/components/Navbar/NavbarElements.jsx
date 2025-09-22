@@ -103,6 +103,8 @@ export const UserIconContainer = styled.div`
     align-items: center;
     justify-content: center;
     margin: 0 40px;
+    border: 1px solid white;
+    border-radius: 50%;
 `;
 
 export const LogoutButton = styled.button`
@@ -139,4 +141,8 @@ export const MenuIcon = styled.img`
     height: 44px;
     width: 44px;
   }
+
+  @media screen and (max-width: 480px) {
+        margin: 0 20px; 
+}
 `;
