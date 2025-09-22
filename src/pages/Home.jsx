@@ -1,7 +1,6 @@
 import React from "react";
-import RegistrationForm from "../components/RegistrationForm";
-import LoginForm from "../components/LoginForm";
-import { useNavigate } from 'react-router-dom'; 
+import RegistrationForm from "../components/auth/RegistrationForm";
+import LoginForm from "../components/auth/LoginForm";
 import "../App.css";
 import ViewRouteData from "./ViewRouteData";
 
@@ -10,12 +9,11 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
   const [viewLogin, setViewLogin] = React.useState(true);
 
   if (isLoggedIn) {
-    return <ViewRouteData />; // Redirect to ViewRouteData if logged in
+    return <ViewRouteData />;
   } else {
 
     return (
       <>
-
       <div className="home">
         <div className="title">
           <h1 >RouteScan</h1>

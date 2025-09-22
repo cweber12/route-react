@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import CompareImageProcessor from "../components/CompareImageProcessor";
+import CompareImageProcessor from "../components/compare-features/CompareImageProcessor";
 import "../App.css";
-import TimestampThumbnails from "../components/TimestampThumbnails";
-import RecentRoutes from "../components/RecentRoutes";
-import SelectLocationMap from "../components/SelectLocationMap";
+import SelectedRouteThumbnails from "../components/thumbnails/SelectedRoute";
+import RecentRoutes from "../components/thumbnails/RecentRoutes";
 
 const ViewRouteData = () => {
   const [treeData, setTreeData] = useState([]);
@@ -16,9 +15,6 @@ const ViewRouteData = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedRecentAttempts, setSelectedRecentAttempts] = useState([]); // For recent routes selection
   const [showCompareForRecent, setShowCompareForRecent] = useState(false);
-  const [areaRoutes, setAreaRoutes] = useState([]); // Add this state
-  
-
   const userName = sessionStorage.getItem("userName");
   const bucketName = "route-keypoints";
   const API = import.meta.env.VITE_API_BASE_URL_M;
@@ -26,25 +22,6 @@ const ViewRouteData = () => {
   // Helper to infer node type
   function inferNodeType(node) {
     return node.type || "area";
-  }
-
-  // Add this inside your ViewRouteData component
-  function flattenNodesWithCoordinates(nodes) {
-    let result = [];
-    for (const node of nodes) {
-      if (
-        node.latitude !== null &&
-        node.longitude !== null &&
-        node.latitude !== undefined &&
-        node.longitude !== undefined
-      ) {
-        result.push(node);
-      }
-      if (node.children && node.children.length > 0) {
-        result = result.concat(flattenNodesWithCoordinates(node.children));
-      }
-    }
-    return result;
   }
 
   // Helper to flatten tree into [{name, path, type}]
@@ -81,7 +58,7 @@ const ViewRouteData = () => {
     if (userName) {
       fetchTree();
     }
-  }, [userName]);
+  }, [userName, API]);
 
   // Handler for selecting recent attempts from RecentRoutes
   const handleRecentRouteSelect = (attempts) => {
@@ -96,70 +73,20 @@ const ViewRouteData = () => {
     }
   };
 
-  // Handler for clearing recent route selection (e.g., after compare or reset)
-  const handleClearRecentCompare = () => {
-    setSelectedRecentAttempts([]);
-    setShowCompareForRecent(false);
-  };
-
-  // Handler for selecting a route from area navigator or search
-  const handleSelectPath = async (s3Path) => {
-    setShowCompareForRecent(false);
-    setSelectedRecentAttempts([]);
-    const pathParts = s3Path.replace(/\/$/, "").split("/").filter(Boolean);
-    setSelectionPath(pathParts);
-    let node = null;
-    let children = [...treeData];
-    for (const part of pathParts) {
-      node = children.find((n) => n.name === part);
-      if (!node) break;
-      children = node.children || [];
-    }
-    if (node && inferNodeType(node) === "route") {
-      const cleanPath = node.path || [userName, ...pathParts.map(s => s.trim())].join("/");
-      setCheckedTimestamps([]);
-      setSelectedRouteInfo({
-        name: node.name,
-        basePath: cleanPath,
-      });
-      const ts = await fetchTimestampsForRoute(cleanPath);
-      setTimestamps(ts);
-      setAreaRoutes([]); // Clear area routes when a route is selected
-    } else {
-      // If an area is selected, fetch all routes under this area from the backend
-      try {
-        const areaPath = pathParts.slice(1).join("/"); // remove userName from path
-        const res = await fetch(`${API}/api/routes-under-area?user=${userName}&area_path=${encodeURIComponent(areaPath)}`);
-        if (res.ok) {
-          const routes = await res.json();
-          setAreaRoutes(routes); // Set area routes for display
-        } else {
-          setAreaRoutes([]);
-        }
-      } catch (err) {
-        console.error("Error fetching routes under area:", err);
-        setAreaRoutes([]);
-      }
-      setCheckedTimestamps([]);
-      setSelectedRouteInfo(null);
-      setTimestamps([]);
-    }
-  };
-
+  // Render area navigator dropdown
   const renderAreaNavigator = () => {
     let nodes = treeData;
     let currentNode = null;
-    let parentNode = null;
+
 
     for (let level = 0; level < selectionPath.length; level++) {
       const selected = selectionPath[level];
-      parentNode = currentNode;
+
       currentNode = nodes.find((n) => n.name === selected);
       if (!currentNode) break;
       nodes = currentNode.children || [];
     }
 
-    const parentName = parentNode ? parentNode.name.toUpperCase() : "ALL AREAS";
     const currentName = currentNode ? currentNode.name : null;
 
     // If at a route node, only show the current route name
@@ -377,7 +304,7 @@ const ViewRouteData = () => {
               </>
             )}
 
-            {(!selectedRouteInfo && areaRoutes.length === 0) && (
+            {!selectedRouteInfo && (
               <>
                 <RecentRoutes
                   onSelectAttempts={(attempts) => handleRecentRouteSelect(attempts)}
@@ -402,7 +329,7 @@ const ViewRouteData = () => {
                 <CompareImageProcessor selectedS3PathArray={checkedTimestamps} />
               )}
               <div style={{width: "100%"}}>
-                <TimestampThumbnails
+                <SelectedRouteThumbnails
                   basePath={selectedRouteInfo.basePath}
                   timestamps={timestamps}
                   bucketName="route-keypoints"

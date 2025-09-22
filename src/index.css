@@ -71,14 +71,14 @@ body {
 }
 
 button { 
-  background-color: 	#499eff;
+  background-color:chartreuse;
   font-size: 20px;
   font-weight: 500; 
   color: black;
   box-sizing: border-box;
   min-width: 120px;
   padding: 5px 15px;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -89,7 +89,8 @@ button {
 }
 
 button:hover {
-  background: #186ac5;
+  background: rgb(173, 255, 210);
+  color: black; 
 }
  
 

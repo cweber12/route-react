@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
@@ -33,27 +33,12 @@ const userLocationIcon = new L.Icon({
   shadowSize: [0, 0]
 });
 
-// AREA ICON (currently not used) 
-const areaIcon = new L.Icon({
-  iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-      <circle cx="10" cy="10" r="8" fill="#FF4444" stroke="#CC0000" stroke-width="2"/>
-    </svg>
-  `),
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-  popupAnchor: [0, -10],
-  shadowSize: [0, 0]
-});
-
 const Map = () => {
   const [mapCenter, setMapCenter] = useState([39.7392, -104.9903]); // Default to Denver, CO
   const [mapZoom, setMapZoom] = useState(5);
   const [mapData, setMapData] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
   const [showLegend, setShowLegend] = useState(false);
-
-  const userName = sessionStorage.getItem("userName");
   const API = import.meta.env.VITE_API_BASE_URL_M;
   const TILE_API = import.meta.env.MAP_TILE_API;
 

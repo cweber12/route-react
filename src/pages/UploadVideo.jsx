@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import "../App.css";
-import ExtractPose from "../components/ExtractPose";
-import DownloadYouTube from "../components/DownloadYouTube";
-import Upload from "../components/Upload";
-import ViewRefFrames from "../components/ViewRefFrames";
-import UploadToS3 from "../components/UploadToS3.jsx";
+import ExtractPose from "../components/video-processing/ExtractPose.jsx";
+import DownloadYouTube from "../components/input/DownloadYouTube.jsx";
+import Upload from "../components/input/Upload.jsx";
+import ViewRefFrames from "../components/video-processing/ViewRefFrames.jsx";
+import UploadToS3 from "../components/s3/UploadToS3.jsx";
 
 
 
@@ -25,11 +25,7 @@ const UploadVideo = () => {
   const [siftRight, setSiftRight] = useState(10);
   const [siftTop, setSiftTop] = useState(10);
   const [siftBottom, setSiftBottom] = useState(10);
-  // ------------------------------------------------------------
-  const [frameWidth, setFrameWidth] = useState(640);
-  const [frameHeight, setFrameHeight] = useState(360);
   const [isStatic, setIsStatic] = useState(true);
-
   // --- CLIMBER BBOX STATE ---------------------------------
   const [editMode, setEditMode] = useState('sift'); // 'sift' or 'climber'
   const [climberLeft, setClimberLeft] = useState(35);
@@ -240,10 +236,7 @@ const UploadVideo = () => {
                             position: "relative",
                             zIndex: 10,
                           }}
-                          onLoadedMetadata={e => {
-                            setFrameWidth(e.target.videoWidth);
-                            setFrameHeight(e.target.videoHeight);
-                          }}
+                          
                           onLoadedData={() => {
                             if (videoRef.current) {
                               setRenderedVideoWidth(videoRef.current.clientWidth);
@@ -283,7 +276,7 @@ const UploadVideo = () => {
                             top: -10,
                             left: 0,
                             width: "100%",
-                            height: 16, // increased height for offset
+                            height: 16, 
                             zIndex: 30,
                             pointerEvents: "none",
                           }}
@@ -445,7 +438,6 @@ const UploadVideo = () => {
                     </div>
                   </>
                 )}
-                {/* Controls below video: SIFT/Climber toggle and checkboxes */}
               </div>
             </div>
 
@@ -494,7 +486,7 @@ const UploadVideo = () => {
                 </ul>
               </div>
             )}
-            {/* ExtractPose on top of video/annotation UI */}
+
             <ExtractPose
               videoPath={videoPath}
               userName={userName}

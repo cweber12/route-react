@@ -10,7 +10,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
   const [fetchError, setFetchError] = useState(false);
   const [omitFrames, setOmitFrames] = useState([]);
   const [omitting, setOmitting] = useState(false);
-
   const API = import.meta.env.VITE_API_BASE_URL_P;
   
   useEffect(() => {
@@ -89,7 +88,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
   if (noFrames) return <p>No data recorded, try adjusting the parameters.</p>;
   if (fetchError) return <p>Reference frames not available ** process scheduling error **</p>;
 
-
   return (
     <div className="ref-frame-container">
       <Zoom>
@@ -100,7 +98,6 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         />
 
       </Zoom>
-
         
       <div className="child-container child-container-row" 
       style={{
@@ -153,25 +150,21 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         )}
       </div>
 
-      
-
       {omitFrames.length > 0 && (
         <>       
-        <span style={{display: "flex", alignItems: "flex-start", justifyContent: "flex-start", gap: "10px"}}>
-        <button 
-        onClick={submitOmittedFrames}
-        disabled={omitting}
-        > Omit Frames  </button>
-   
-          
-        </span>
-        <p style={{color: "white"}}>Omitted Frames: {omitFrames.join(", ")}</p>
-        </>
-        
+          <span style={{display: "flex", alignItems: "flex-start", justifyContent: "flex-start", gap: "10px"}}>
+          <button 
+            onClick={submitOmittedFrames}
+            disabled={omitting}
+          >
+            Omit Frames
+          </button>
+          </span>
+          <p style={{color: "white"}}>Omitted Frames: {omitFrames.join(", ")}</p>
+        </>        
       )}
+
     </div>
-
-
   );
 };
 

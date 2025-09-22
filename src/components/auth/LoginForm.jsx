@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-import "../App.css";
+import "../../App.css";
 
 export default function LoginForm({ onLogin }) {
   const [form, setForm] = useState({ username: '', password: '' });

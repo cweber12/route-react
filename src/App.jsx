@@ -4,12 +4,12 @@ import UploadVideo from "./pages/UploadVideo";
 import Home from "./pages/Home";
 import Map from "./pages/Map";
 import ExampleVideos from "./pages/ExampleVideos";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/navbar/Navbar.jsx";
 import "./App.css";
 import ViewRouteData from "./pages/ViewRouteData";
 
 const App = () => {
-  const [videoPath, setVideoPath] = useState("");
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginChecked, setLoginChecked] = useState(false);
 
@@ -55,11 +55,11 @@ const App = () => {
             <>
               <Route
                 path="/upload-video"
-                element={<UploadVideo setVideoPath={setVideoPath} />}
+                element={<UploadVideo />}
               />
               <Route
                 path="/route-data"
-                element={<ViewRouteData onFinalFolderSelect={setVideoPath} />}
+                element={<ViewRouteData />}
               />
               <Route
                 path="/map"

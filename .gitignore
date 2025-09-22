@@ -1,4 +1,5 @@
-# Logs
+
+# --- LOG FILES ---
 logs
 *.log
 npm-debug.log*
@@ -7,43 +8,47 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# --- NODE & BUILD ARTIFACTS ---
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# --- IDE & EDITOR FILES ---
+.vscode/*           # VS Code settings
+!.vscode/extensions.json # Allow recommended extensions
+.idea              # JetBrains IDE
+.DS_Store          # macOS Finder
+*.suo              # Visual Studio
+*.ntvs*            # Node.js Tools for VS
+*.njsproj          # Node.js project files
+*.sln              # Visual Studio solution
+*.sw?              # Swap files
 
-node_modules
-.env
-venv
-temp_uploads
-test_data
-.pt
-models
-_pycache_
-_init_.py
-__pycache__
+# --- PYTHON ARTIFACTS ---
+venv               # Python virtual environment
+_pycache_          # Custom pycache folder
+__pycache__        # Python bytecode cache
 *.pyc
 *.pyo
 *.pyd
 *.pyw
 *.pyz
 *.pywz
-*.pyc
-*.pyo
-*.pyd
-*.pyw  
+_init_.py          # Custom init file
+models             # Model files
+.pt                # PyTorch model files
 
+# --- ENVIRONMENT & CONFIG FILES ---
+.env               # Main environment file
+.env.production    # Production env
+.env.development   # Development env
+
+# --- TEMPORARY & TEST DATA ---
+temp_uploads
+test_data
+
+# --- DOCKER & DEPLOYMENT ---
 Dockerfile
 .dockerignore
 .elasticbeanstalk

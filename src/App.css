@@ -11,16 +11,17 @@
   text-align: left;
   justify-content:center; 
   align-items: flex-start; 
-  font-family: 'Roboto', sans-serif;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .title {
   color: #ffffff;
   text-shadow: 2px 2px 4px black;
   text-decoration: underline;
+  text-decoration-color: #85F71E;
+  text-decoration-thickness: 8px;
   background: url('/assets/ship_cutout.PNG');
   background-size: cover;
-
   background-position: center;
   margin: 0;
   padding: 0px; 
@@ -28,9 +29,10 @@
 }
 
 .title > h1 {
+  font-family:'Courier New', Courier, monospace;
   margin: 0;
-  font-size: 128px;
-  font-weight: 600;
+  font-size: 100px;
+  font-weight: 550;
   text-align: end;
 }
 
@@ -109,7 +111,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;  
   padding: 20px 0px; 
 }
 
@@ -284,6 +285,14 @@
 
 .compare-buttons-col > * {
   width: 100%
+}
+
+.compare-buttons-row {
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
 }
 
 @media screen and (max-width: 768px) {
@@ -1279,14 +1288,20 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.demo-button { 
-  height: 50px; 
-  width: 274px; 
+.demo-button {
+  background-color: #1e85f7;
+  height: 50px;
+  width: 274px;
   font-weight: 500;
   border: 1px solid #2a2a2a;
-  border-radius: 4px;
   text-align: center; 
   margin-top: 20px;
+}
+
+.demo-button:hover {
+  background-color: #155e95;
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
 }
 
 @keyframes pulse-brightness {

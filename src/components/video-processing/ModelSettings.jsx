@@ -1,6 +1,5 @@
-import React, {useState} from "react";
-
-import "../App.css";
+import React from "react";
+import "../../App.css";
 
 const ModelSettings = ({
   /* Process every n-th frame */
@@ -27,11 +26,6 @@ const ModelSettings = ({
   setKernelEdge,
   kernelCenter,
   setKernelCenter,
-
-  /* Notify backend to use auto preprocessing
-     (CLAHE, sharpen, gamma) */
-  preprocess, 
-  setPreprocess,
 
   adjustBrightness,
   setAdjustBrightness,
@@ -72,7 +66,7 @@ const ModelSettings = ({
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
           checked={enhanceContrast}
-          disabled={preprocess}
+
           onChange={(e) => setEnhanceContrast(e.target.checked)}
         />
         <label>Enhance contrast</label>
@@ -109,7 +103,6 @@ const ModelSettings = ({
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
           checked={sharpenImage}
-          disabled={preprocess}
           onChange={(e) => setSharpenImage(e.target.checked)}
         />
         <label>Sharpen</label>
@@ -147,7 +140,6 @@ const ModelSettings = ({
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
           checked={adjustBrightness}
-          disabled={preprocess}
           onChange={(e) => setAdjustBrightness(e.target.checked)}
         />
         <label>Adjust Brightness</label>
