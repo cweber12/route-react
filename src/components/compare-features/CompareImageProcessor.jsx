@@ -14,6 +14,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const [renderedImgDims, setRenderedImgDims] = useState({ width: 0, height: 0 });
   const [hover, setHover] = useState(false);
   const userName = sessionStorage.getItem("userName");
+  const [currentImageSrc, setCurrentImageSrc] = useState(null);
 
   // Add state for pose skeleton colors
   const [lineColor, setLineColor] = useState("#64ff00"); // default: 100,255,0
@@ -25,6 +26,22 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const API = import.meta.env.VITE_API_BASE_URL_M;
   const imgRef = useRef(null);
   const fileInputRef = React.useRef();
+
+  const fetchCurrentImage = async () => {
+  try {
+    const res = await fetch(`${API}/api/current-image`);
+    const data = await res.json();
+    if (data.image) {
+      // Display the image using a data URL
+      setCurrentImageSrc(`data:image/jpeg;base64,${data.image}`);
+    } else {
+      setCurrentImageSrc(null);
+    }
+  } catch (err) {
+    console.error("Failed to fetch current image:", err);
+    setCurrentImageSrc(null);
+  }
+};
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -165,6 +182,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
 
         if (statusData.progress) {
           setProgress(statusData.progress);
+          fetchCurrentImage(); 
         }
 
         if (statusData.status === "success" && statusData.video_url) {
@@ -183,6 +201,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
       alert("Error processing image: " + (err.message || err));
     } finally {
       setProcessing(false);
+      setCurrentImageSrc(null); // Clear current image when done
     }
   };
 
@@ -263,7 +282,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         style={{
           alignItems:"center",
           justifyContent: "space-between",
-          width: "100%"
+          width: "100%", 
         }}
       >
       
@@ -272,7 +291,12 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
 
       <div 
         className="parent-container parent-container-column"
-        style={{alignItems: "center", justifyContent: "center", width: "100%", maxWidth: "600px"}}
+        style={{
+          alignItems: "center", 
+          justifyContent: "center", 
+          width: "100%", 
+          maxWidth: "600px", 
+        }}
       >
     
         { /* Display output video */}
@@ -298,7 +322,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
         )}
  
         {/* SIFT sliders and image preview */}
-        {imageFile && !videoUrl && (
+        {imageFile && !videoUrl && !currentImageSrc && (
           <div className="compare-image-preview-container">
             <div style={{ position: "relative", maxWidth: 500, maxHeight: "600px", margin: "0" }}>
               <img
@@ -476,7 +500,7 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           </div>
         )}
         {/* Color selectors for pose skeleton */}
-        {imageFile && !videoUrl && (
+        {imageFile && !videoUrl && !currentImageSrc && (
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', margin: '0', justifyContent: 'flex-start' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontWeight: 500, color: 'white' }}>Line Color:</span>
@@ -500,6 +524,15 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
             </label>
           </div>
         )}
+
+        {currentImageSrc && !videoUrl && (
+          <img
+            src={currentImageSrc}
+            alt="Current pose frame"
+            style={{ maxWidth: "100%", borderRadius: 4 }}
+          />
+        )}
+
         {processing && (
           <div style={{ width: "100%", maxWidth: 600, margin: "12px 0", textAlign: "center", color: "white" }}>
             <div style={{ marginBottom: 8, fontWeight: 600}}>Progress: {Math.round(progress)}%</div>
