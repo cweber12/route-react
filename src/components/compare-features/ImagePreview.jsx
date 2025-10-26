@@ -4,7 +4,6 @@ const ImagePreview = ({
     imageFile,
     imageUrl,
     videoUrl,
-    videoReady,
     selectedS3PathArray,
     userName,
     processing,
@@ -59,28 +58,6 @@ const ImagePreview = ({
                     }}
                 >
                 
-                    {/* Display output video */}
-                    {videoUrl && (
-                    videoReady ? (
-                        <video 
-                        className="media" 
-                        controls 
-                        >
-                        <source src={videoUrl} type="video/mp4" />
-                        Your browser does not support the video tag.
-                        </video>
-                    ) : (
-                        <div 
-                        style={{
-                            color: 'chartreuse', 
-                            padding: 0, 
-                            textAlign: 'center', 
-                            }}>
-                        Generating video...
-                        </div>
-                    )
-                    )}
-            
                     {/* SIFT sliders and image preview */}
                     {imageFile && !videoUrl && !currentImageSrc && (
                     <div className="compare-image-preview-container">
