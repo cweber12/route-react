@@ -202,6 +202,7 @@ const UploadVideo = () => {
                   }}
                   onChange={e => setIsStatic(e.target.checked)}
                 />
+                Static Video? 
               </label>
             </div>
             <div className="parent-container parent-container-row" style={{ width: "100%", alignItems: "flex-start", justifyContent: "center", gap: 20 }}>

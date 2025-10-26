@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import "../../App.css";
+import ImagePreview from "./ImagePreview.jsx";
 
 const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const [imageFile, setImageFile] = useState(null);
@@ -285,9 +286,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           width: "100%", 
         }}
       >
-      
-
-        
 
       <div 
         className="parent-container parent-container-column"
@@ -298,7 +296,36 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
           maxWidth: "600px", 
         }}
       >
-    
+        <ImagePreview
+            imageFile={imageFile}
+            imageUrl={imageUrl}
+            videoUrl={videoUrl}
+            videoReady={videoReady}
+            selectedS3PathArray={selectedS3PathArray}
+            userName={userName}
+            processing={processing}
+            imgRef={imgRef}
+            currentImageSrc={currentImageSrc}
+            handleImageLoad={handleImageLoad}
+            handleRenderedImgResize={handleRenderedImgResize}
+            setHover={setHover}
+            hover={hover}
+            imgDims={imgDims}
+            siftLeft={siftLeft}
+            siftUp={siftUp}
+            siftRight={siftRight}
+            siftDown={siftDown}
+            setSiftLeft={setSiftLeft}
+            setSiftUp={setSiftUp}
+            setSiftRight={setSiftRight}
+            setSiftDown={setSiftDown}
+            renderedImgDims={renderedImgDims}
+            lineColor={lineColor}
+            pointColor={pointColor}
+            setLineColor={setLineColor}
+            setPointColor={setPointColor}
+            progress={progress}
+          />
         { /* Display output video */}
         {videoUrl && (
           videoReady ? (
