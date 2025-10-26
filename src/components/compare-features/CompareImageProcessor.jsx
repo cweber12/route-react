@@ -271,337 +271,107 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
 
 
   return (
-   <>
-   {!videoUrl && imageFile && userName === "Demo" && !processing && (
-      <div className="instructions"> 
-        <p>Move the sliders to highlight the route, then press "Scan Image"</p>
-      </div>
-   )}    
-    {selectedS3PathArray && selectedS3PathArray.length > 0 && (
-      <div 
-        className="parent-container parent-container-column"
-        style={{
+    <>
+      {!videoUrl && imageFile && userName === "Demo" && !processing && (
+        <div className="instructions"> 
+          <p>Move the sliders to highlight the route, then press "Scan Image"</p>
+        </div>
+      )}
+
+      {selectedS3PathArray && selectedS3PathArray.length > 0 && (
+        <div 
+          className="parent-container parent-container-column"
+          style={{
           alignItems:"center",
           justifyContent: "space-between",
           width: "100%", 
-        }}
-      >
-
-      <div 
-        className="parent-container parent-container-column"
-        style={{
-          alignItems: "center", 
-          justifyContent: "center", 
-          width: "100%", 
-          maxWidth: "600px", 
-        }}
-      >
-        <ImagePreview
-            imageFile={imageFile}
-            imageUrl={imageUrl}
-            videoUrl={videoUrl}
-            videoReady={videoReady}
-            selectedS3PathArray={selectedS3PathArray}
-            userName={userName}
-            processing={processing}
-            imgRef={imgRef}
-            currentImageSrc={currentImageSrc}
-            handleImageLoad={handleImageLoad}
-            handleRenderedImgResize={handleRenderedImgResize}
-            setHover={setHover}
-            hover={hover}
-            imgDims={imgDims}
-            siftLeft={siftLeft}
-            siftUp={siftUp}
-            siftRight={siftRight}
-            siftDown={siftDown}
-            setSiftLeft={setSiftLeft}
-            setSiftUp={setSiftUp}
-            setSiftRight={setSiftRight}
-            setSiftDown={setSiftDown}
-            renderedImgDims={renderedImgDims}
-            lineColor={lineColor}
-            pointColor={pointColor}
-            setLineColor={setLineColor}
-            setPointColor={setPointColor}
-            progress={progress}
+          }}
+        >
+          <ImagePreview
+              imageFile={imageFile}
+              imageUrl={imageUrl}
+              videoUrl={videoUrl}
+              videoReady={videoReady}
+              selectedS3PathArray={selectedS3PathArray}
+              userName={userName}
+              processing={processing}
+              imgRef={imgRef}
+              currentImageSrc={currentImageSrc}
+              handleImageLoad={handleImageLoad}
+              handleRenderedImgResize={handleRenderedImgResize}
+              setHover={setHover}
+              hover={hover}
+              imgDims={imgDims}
+              siftLeft={siftLeft}
+              siftUp={siftUp}
+              siftRight={siftRight}
+              siftDown={siftDown}
+              setSiftLeft={setSiftLeft}
+              setSiftUp={setSiftUp}
+              setSiftRight={setSiftRight}
+              setSiftDown={setSiftDown}
+              renderedImgDims={renderedImgDims}
+              lineColor={lineColor}
+              pointColor={pointColor}
+              setLineColor={setLineColor}
+              setPointColor={setPointColor}
+              progress={progress}
           />
-        { /* Display output video */}
-        {videoUrl && (
-          videoReady ? (
-            <video 
-              className="media" 
-              controls 
-            >
-              <source src={videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <div 
-              style={{
-                color: 'chartreuse', 
-                padding: 0, 
-                textAlign: 'center', 
-                }}>
-              Generating video...
-            </div>
-          )
-        )}
- 
-        {/* SIFT sliders and image preview */}
-        {imageFile && !videoUrl && !currentImageSrc && (
-          <div className="compare-image-preview-container">
-            <div style={{ position: "relative", maxWidth: 500, maxHeight: "600px", margin: "0" }}>
-              <img
-                ref={imgRef}
-                src={imageUrl}
-                alt="Selected"
-                style={{ width: "100%", height: "auto", display: "block", maxWidth: 500, maxHeight: "600px", borderRadius: "4px" }}
-                onLoad={e => { handleImageLoad(e); handleRenderedImgResize(); }}
-                onMouseEnter={() => setHover(true)}
-                onMouseLeave={() => setHover(false)}
-                onResize={handleRenderedImgResize}
-              />
-              {/* SVG overlay for SIFT box */}
-              <svg
-                width={imgDims.width}
-                height={imgDims.height}
-                viewBox={`0 0 ${imgDims.width} ${imgDims.height}`}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  pointerEvents: "none",
-                  zIndex: 8,
-                }}
+          
+          { /* Display output video */}
+          {videoUrl && (
+            videoReady ? (
+              <video 
+                className="media" 
+                controls 
               >
-                {(() => {
-                  const x = Math.max(0, (siftLeft / 100) * imgDims.width);
-                  const y = Math.max(0, (siftUp / 100) * imgDims.height);
-                  const w = Math.max(0, imgDims.width - ((siftLeft / 100) * imgDims.width) - ((siftRight / 100) * imgDims.width));
-                  const h = Math.max(0, imgDims.height - ((siftUp / 100) * imgDims.height) - ((siftDown / 100) * imgDims.height));
-                  return (
-                    <rect
-                      x={x}
-                      y={y}
-                      width={w}
-                      height={h}
-                      fill="none"
-                      stroke="#85F71E"
-                      strokeWidth="3"
-                      rx="6"
-                      style={{ filter: hover ? "drop-shadow(0 0 6px #85F71E)" : undefined, transition: "filter 0.2s" }}
-                    />
-                  );
-                })()}
-              </svg>
-              {/* Horizontal dual-thumb sliders (left/right) */}
-              <div
+                <source src={videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <div 
                 style={{
-                  position: "absolute",
-                  top: -12,
-                  left: 0,
-                  width: "100%", // always match rendered image width
-                  height: 32, // increased height to make touch easier
-                  zIndex: 30,
-                  pointerEvents: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 0,
-                  background: "rgba(0,0,0,0.01)", // transparent but blocks pointer events
-                }}
-                onTouchStart={e => e.stopPropagation()}
-                onPointerDown={e => e.stopPropagation()}
-              >
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={siftLeft}
-                  onChange={e => {
-                    const val = Math.min(Number(e.target.value), 95);
-                    if (val > 100 - siftRight - 5) return;
-                    setSiftLeft(val);
-                  }}
-                  className="slider-thumb-sift"
-                  style={{
-                    pointerEvents: "auto",
-                    position: "absolute",
-                    top: -10,
-                    left: 0,
-                    width: "100%", // always match rendered image width
-                    height: 8,
-                    zIndex: 30,
-                  }}
-                />
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={100 - siftRight}
-                  onChange={e => {
-                    const val = Math.min(100 - Number(e.target.value), 95);
-                    if (val > 100 - siftLeft - 5) return;
-                    setSiftRight(val);
-                  }}
-                  className="slider-thumb-sift"
-                  style={{
-                    pointerEvents: "auto",
-                    position: "absolute",
-                    top: -30,
-                    left: 0,
-                    width: "100%", // always match rendered image width
-                    height: 8,
-                    zIndex: 30,
-                  }}
-                />
+                  color: 'chartreuse', 
+                  padding: 0, 
+                  textAlign: 'center', 
+                  }}>
+                Generating video...
               </div>
-              {/* Vertical dual-thumb slider on left border */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: -5,
-                  width: 32, // increased width to make touch easier
-                  height: renderedImgDims.height, // match rendered image height
-                  zIndex: 30,
-                  transform: "rotate(90deg)",
-                  transformOrigin: "top left",
-                  pointerEvents: "auto",
-                  background: "rgba(0,0,0,0.01)", // transparent but blocks pointer events
-                }}
-                onTouchStart={e => e.stopPropagation()}
-                onPointerDown={e => e.stopPropagation()}
-              >
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={siftUp}
-                  onChange={e => {
-                    const val = Math.min(Number(e.target.value), 95);
-                    if (val > 100 - siftDown - 5) return;
-                    setSiftUp(val);
-                  }}
-                  className="slider-thumb-sift"
-                  style={{
-                    pointerEvents: "auto",
-                    position: "absolute",
-                    top: 25,
-                    left: 0,
-                    width: renderedImgDims.height,
-                    height: 8,
-                    zIndex: 30,
-                  }}
-                />
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={100 - siftDown}
-                  onChange={e => {
-                    const val = Math.min(100 - Number(e.target.value), 95);
-                    if (val > 100 - siftUp - 5) return;
-                    setSiftDown(val);
-                  }}
-                  className="slider-thumb-sift"
-                  style={{
-                    pointerEvents: "auto",
-                    position: "absolute",
-                    top: 5,
-                    left: 0,
-                    width: renderedImgDims.height,
-                    height: 8,
-                    zIndex: 30,
-                  }}
-                />
-              </div>
-              
+            )
+          )}
+          
+          {!videoUrl && !imageFile && userName === "Demo" && !processing && (
+            <div className="instructions"> 
+              <p>Find an image of the selected route using the dropdown or file explorer</p>
             </div>
-          </div>
-        )}
-        {/* Color selectors for pose skeleton */}
-        {imageFile && !videoUrl && !currentImageSrc && (
-          <div style={{ display: 'flex', gap: 24, alignItems: 'center', margin: '0', justifyContent: 'flex-start' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 500, color: 'white' }}>Line Color:</span>
-              <input
-                type="color"
-                value={lineColor}
-                onChange={e => setLineColor(e.target.value)}
-                style={{ width: 32, height: 32, border: 'none', background: 'none', cursor: 'pointer' }}
-                title="Select pose skeleton line color"
-              />
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 500, color: 'white' }}>Point Color:</span>
-              <input
-                type="color"
-                value={pointColor}
-                onChange={e => setPointColor(e.target.value)}
-                style={{ width: 32, height: 32, border: 'none', background: 'none', cursor: 'pointer' }}
-                title="Select pose skeleton point color"
-              />
-            </label>
-          </div>
-        )}
+          )}
 
-        {currentImageSrc && !videoUrl && (
-          <img
-            src={currentImageSrc}
-            alt="Current pose frame"
-            style={{ maxWidth: "100%", borderRadius: 4 }}
-          />
-        )}
-
-        {processing && (
-          <div style={{ width: "100%", maxWidth: 600, margin: "12px 0", textAlign: "center", color: "white" }}>
-            <div style={{ marginBottom: 8, fontWeight: 600}}>Progress: {Math.round(progress)}%</div>
-            <div style={{background: "none",height: 12, borderRadius: 6, overflow: "hidden" }}>
-              <div style={{ width: `${progress}%`, height: "100%", background: "#85F71E", transition: "width 400ms ease" }} />
-            </div>
-          </div>
-        )}
-
-        </div>
-        {!videoUrl && !imageFile && userName === "Demo" && !processing && (
-          <div className="instructions"> 
-            <p>Find an image of the selected route using the dropdown or file explorer</p>
-          </div>
-        )}
-        <div className="compare-buttons-col" style={{width: videoUrl ? "inherit" : "100%"}}>
+          <div className="compare-buttons-col" style={{width: videoUrl ? "inherit" : "100%"}}>
 
             {userName == "Demo" && (
-            <select
-              className="built-in-image-select"
-              id="built-in-image-select"
-              value={selectedBuiltInImage || ""}
-              onChange={handleBuiltInImageSelect}
-            >
-              <option value="">DEMO IMAGES</option>
-              <option value="s3://route-keypoints/sample-images/IronManTraverse.JPG">IronManTraverse.jpg</option>
-              <option value="s3://route-keypoints/sample-images/KingAir2.jpg">KingAir.jpg</option>
-              <option value="s3://route-keypoints/sample-images/MazeOfDeath2.jpg">MazeOfDeath.jpg</option>
-              <option value="s3://route-keypoints/sample-images/midnight lightning yosemite.jpg">MidnightLightning.jpg</option>
-              <option value="s3://route-keypoints/sample-images/moonraker3.jpg">Moonraker.jpg</option>
-              <option value="s3://route-keypoints/sample-images/phantommenace.jpg">PhantomMenace.jpg</option>
-              <option value="s3://route-keypoints/sample-images/AScannerDarkly2.jpg">ScannerDarkly_A.jpg</option>
-              <option value="s3://route-keypoints/sample-images/Slashface3.png">Slashface.png</option>
-             
-            </select>
+              <select
+                className="built-in-image-select"
+                id="built-in-image-select"
+                value={selectedBuiltInImage || ""}
+                onChange={handleBuiltInImageSelect}
+              >
+                <option value="">DEMO IMAGES</option>
+                <option value="s3://route-keypoints/sample-images/IronManTraverse.JPG">IronManTraverse.jpg</option>
+                <option value="s3://route-keypoints/sample-images/KingAir2.jpg">KingAir.jpg</option>
+                <option value="s3://route-keypoints/sample-images/MazeOfDeath2.jpg">MazeOfDeath.jpg</option>
+                <option value="s3://route-keypoints/sample-images/midnight lightning yosemite.jpg">MidnightLightning.jpg</option>
+                <option value="s3://route-keypoints/sample-images/moonraker3.jpg">Moonraker.jpg</option>
+                <option value="s3://route-keypoints/sample-images/phantommenace.jpg">PhantomMenace.jpg</option>
+                <option value="s3://route-keypoints/sample-images/AScannerDarkly2.jpg">ScannerDarkly_A.jpg</option>
+                <option value="s3://route-keypoints/sample-images/Slashface3.png">Slashface.png</option> 
+              </select>
             )}
-             <label 
+
+            <label 
               htmlFor="image-upload" 
               className="button-label"
-            >
-              Image Files
-            </label>
+            >Image Files</label>
+
             <input
               id="image-upload"
               type="file"
@@ -610,16 +380,15 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               onChange={handleFileChange}
               ref={fileInputRef}
             />
+
             {imageFile || selectedBuiltInImage ? (
               <button
                 onClick={handleProcess}
                 disabled={processing || (!imageFile && !selectedBuiltInImage)}
-              >
-              {processing ? "Scanning..." : "Scan Image"}
-            </button>
+              >{processing ? "Scanning..." : "Scan Image"}</button>
             ) : null}
           </div>
-      </div>
+        </div> 
       )}
     </>
   );
