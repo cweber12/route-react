@@ -105,13 +105,13 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                   }}
                 >
                   <NavLink 
-                    to="/upload-video" 
-                    className={location.pathname === "/upload-video" ? "active-link" : ""}
+                    to="/scan-video" 
+                    className={location.pathname === "/scan-video" ? "active-link" : ""}
                     onClick={handlePageChange}
                     style={!isUploadApiAvailable ? { pointerEvents: 'none', opacity: 0.5, cursor: 'not-allowed' } : {}}
                     disabled={!isUploadApiAvailable}
                   >
-                    UPLOAD A VIDEO
+                    SCAN A VIDEO
                   </NavLink>
                   <NavLink 
                     to="/route-data" 

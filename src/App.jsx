@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UploadVideo from "./pages/UploadVideo";
+import ScanVideo from "./pages/ScanVideo.jsx";
 import Home from "./pages/Home";
 import Map from "./pages/Map";
 import ExampleVideos from "./pages/ExampleVideos";
@@ -54,8 +54,8 @@ const App = () => {
           {isLoggedIn && (
             <>
               <Route
-                path="/upload-video"
-                element={<UploadVideo />}
+                path="/scan-video"
+                element={<ScanVideo />}
               />
               <Route
                 path="/route-data"

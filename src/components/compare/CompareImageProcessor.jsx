@@ -1,3 +1,6 @@
+// CompareImageProcessor.jsx
+// Component to handle image upload, processing, and displaying results
+
 import React, { useState, useRef, useCallback } from "react";
 import "../../App.css";
 import ImagePreview from "./ImagePreview.jsx";
@@ -7,21 +10,20 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
   const [processing, setProcessing] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [progress, setProgress] = useState(0); // Job progress (0-100%) 
+  // SIFT parameters
   const [siftLeft, setSiftLeft] = useState(20);
   const [siftRight, setSiftRight] = useState(20);
   const [siftUp, setSiftUp] = useState(20);
   const [siftDown, setSiftDown] = useState(20);
+  // Image dimensions
   const [imgDims, setImgDims] = useState({ width: 640, height: 360 });
   const [renderedImgDims, setRenderedImgDims] = useState({ width: 0, height: 0 });
-  const [hover, setHover] = useState(false);
   const userName = sessionStorage.getItem("userName");
   const [currentImageSrc, setCurrentImageSrc] = useState(null);
-
-  // Add state for pose skeleton colors
+  //pose skeleton colors
   const [lineColor, setLineColor] = useState("#64ff00"); // default: 100,255,0
   const [pointColor, setPointColor] = useState("#0064ff"); // default: 0,100,255
-
-  // Add state for built-in image selection
+  // built-in image selection
   const [selectedBuiltInImage, setSelectedBuiltInImage] = useState(null);
 
   const API = import.meta.env.VITE_API_BASE_URL_M;
@@ -280,12 +282,8 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
 
       {selectedS3PathArray && selectedS3PathArray.length > 0 && (
         <div 
-          className="parent-container parent-container-column"
-          style={{
-          alignItems:"center",
-          justifyContent: "space-between",
-          width: "100%", 
-          }}
+          className="nested-container column"
+          style={{justifyContent: "space-between",}}
         >
           <ImagePreview
               imageFile={imageFile}
@@ -299,8 +297,6 @@ const CompareImageProcessor = ({ selectedS3PathArray }) => {
               currentImageSrc={currentImageSrc}
               handleImageLoad={handleImageLoad}
               handleRenderedImgResize={handleRenderedImgResize}
-              setHover={setHover}
-              hover={hover}
               imgDims={imgDims}
               siftLeft={siftLeft}
               siftUp={siftUp}

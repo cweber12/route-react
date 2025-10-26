@@ -126,7 +126,7 @@ const ExtractPose = ({
 
   return (
     <>
-      <div className="parent-container parent-container-column" >
+      <div className="nested-container column" >
         <div className="compare-buttons-col">
           <select
             id="poseModel"

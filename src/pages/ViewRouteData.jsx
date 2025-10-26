@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CompareImageProcessor from "../components/compare-features/CompareImageProcessor";
+import CompareImageProcessor from "../components/compare/CompareImageProcessor";
 import "../App.css";
 import SelectedRouteThumbnails from "../components/thumbnails/SelectedRoute";
 import RecentRoutes from "../components/thumbnails/RecentRoutes";
@@ -216,7 +216,7 @@ const ViewRouteData = () => {
       <div 
       className="page-container" 
       >
-        <div className="page-header">
+        <div className="main-header">
           <h1>SAVED ROUTES</h1>          
         </div>
         {selectionPath.length === 0 && userName === "Demo" && (
@@ -297,7 +297,7 @@ const ViewRouteData = () => {
 
             {showCompareForRecent && selectedRecentAttempts.length > 0 && (
               <>
-              <div className="page-header">
+              <div className="main-header">
                 <h2>VIEW</h2>
               </div>
               <CompareImageProcessor selectedS3PathArray={selectedRecentAttempts} />
@@ -320,7 +320,7 @@ const ViewRouteData = () => {
           {/* Show TimestampThumbnails for selected route */}
           {selectedRouteInfo && (timestamps.length > 0 || timestamps.length === 0) && (
             <>
-            <div className="page-header">
+            <div className="main-header">
               <h2>
                 {selectedRouteInfo.name.toUpperCase()}
               </h2>

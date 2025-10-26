@@ -21,15 +21,7 @@ export default function SelectedRouteThumbnails({
 
   return (
     <> 
-      <div 
-        className="parent-container parent-container-row" 
-        style={{ 
-          width: "100%", 
-          justifyContent: "center", 
-          alignItems: "center", 
-          marginTop: "20px"
-        }}
-        >
+      <div className="nested-container row" >
         {[...timestamps].slice().reverse().map((t, idx) => {
           const folderUri = `s3://${bucketName}/${cleanBase}/${t.name}/`;
           const key = `${cleanBase}/${t.name}/route_image.jpg`;

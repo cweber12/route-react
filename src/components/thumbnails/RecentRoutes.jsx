@@ -28,8 +28,8 @@ const RecentRoutes = ({ onSelectAttempts, selectedAttempts = []}) => {
 
   return (
     <>
-      <div className="parent-container parent-container-column">
-        <div className="page-header">
+      <div className="nested-container column">
+        <div className="main-header">
           <h2>RECENT</h2>
         </div>
         {!selectedAttempts.length && (
@@ -38,7 +38,7 @@ const RecentRoutes = ({ onSelectAttempts, selectedAttempts = []}) => {
         </div>
         )}
         <div
-          className="parent-container parent-container-row"
+          className="nested-container row"
           style={{
             justifyContent: "center",
             width: "fit-content", 

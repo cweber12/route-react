@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef} from "react";
 import "../App.css";
 import ExtractPose from "../components/video-processing/ExtractPose.jsx";
-import DownloadYouTube from "../components/input/DownloadYouTube.jsx";
-import Upload from "../components/input/Upload.jsx";
+import DownloadYouTube from "../components/upload/DownloadYouTube.jsx";
+import Upload from "../components/upload/Upload.jsx";
 import ViewRefFrames from "../components/video-processing/ViewRefFrames.jsx";
 import UploadToS3 from "../components/s3/UploadToS3.jsx";
 
 
 
-const UploadVideo = () => {
+const ScanVideo = () => {
   const [videoPath, setVideoPath] = useState("");
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,21 +67,7 @@ const UploadVideo = () => {
       >
         {!videoPath && (
           <>
-            <div 
-              className="parent-container parent-container-column" 
-              style={{ 
-                width: '100%', 
-                alignItems: 'flex-start', 
-                justifyContent: 'center',
-                color: "white",
-                fontSize: "20px", 
-                fontWeight: "500",
-
-              }}
-            >
-              <div className="page-header" style={{paddingTop: 0}}> 
-                <h1>Upload a Video</h1>
-              </div>
+            <div className="nested-container column">
               <p style={{margin: 0}}>Upload from your device</p>
               <Upload setVideoPath={setVideoPath} setVideoUrl={setVideoUrl} />
               <p style={{margin: 0}}>
@@ -109,11 +95,8 @@ const UploadVideo = () => {
         )}
         {videoPath && (
           <>
-            <div 
-              className="parent-container parent-container-row"
-              style={{alignItems: "center"}}
-            >
-              <div className="page-header">
+            <div className="nested-container row">
+              <div className="main-header">
               <h2>SET DETECTION AREAS</h2>
                 
                 <div
@@ -146,10 +129,7 @@ const UploadVideo = () => {
               </div>
             )}
 
-            <div 
-              className="parent-container parent-container-row"
-              style={{justifyContent: "center"}}
-            >
+            <div className="nested-container row">
               <button
                 onClick={() => setEditMode('sift')}
                 style={{
@@ -205,15 +185,11 @@ const UploadVideo = () => {
                 Static Video? 
               </label>
             </div>
-            <div className="parent-container parent-container-row" style={{ width: "100%", alignItems: "flex-start", justifyContent: "center", gap: 20 }}>
+            <div className="nested-container row">
               {/* Video, SVG, sliders column */}
               <div 
-                className="parent-container parent-container-column" 
-                style={{ 
-                  alignItems: 'flex-start', 
-                  flex: 1, 
-                  width: '100%'
-                }}
+                className="nested-container column" 
+                style={{ alignItems: 'flex-start', flex: 1, width: '100%' }}
               >
                 {videoUrl && (
                   <>
@@ -450,7 +426,7 @@ const UploadVideo = () => {
               </div>
             </div>
 
-            <div className="page-header">
+            <div className="main-header">
               <h2>SCAN VIDEO</h2>
               <span
                 onClick={() => setShowProcessInfo(!showProcessInfo)}
@@ -527,10 +503,10 @@ const UploadVideo = () => {
 
         {poseFilePath && siftFilePath && !loading && showS3Upload && (
           <>
-            <div className="page-header">
+            <div className="main-header">
               <h2>SAVE ROUTE DATA</h2>
             </div>
-            <div className="parent-container parent-container-column">
+            <div className="nested-container column">
               <UploadToS3
                 poseFilePath={poseFilePath}
                 siftFilePath={siftFilePath}
@@ -546,4 +522,4 @@ const UploadVideo = () => {
   );
 };
 
-export default UploadVideo;
+export default ScanVideo;

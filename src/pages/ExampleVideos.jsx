@@ -11,7 +11,7 @@ const ExampleVideos = () => {
                 marginTop: "-60px"
                 }}>
 
-            <div className="page-header">
+            <div className="main-header">
                 <h1>Example Videos</h1>
                 <button>
                 <a href="/" style={{color: "black"}}>
