@@ -14,11 +14,11 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
 
     return (
       <>
-      <div className="home">
+      <div className="landing-page-container">
         <div className="title">
           <h1 >RouteScan</h1>
           </div>
-        <div className="login">
+        <div className="auth-container">
           {viewRegistration && <RegistrationForm />}
           {viewLogin && <LoginForm onLogin={() => setIsLoggedIn(true)} />}
           {viewRegistration && (

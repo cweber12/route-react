@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Nav, NavLink, UserIconContainer, MenuIcon } from "./NavbarElements";
 // import styled from "styled-components";
 import { useNavigate, useLocation } from 'react-router-dom'; 
+import DownloadManager from "../s3/DownloadManager.jsx";
 
 const Navbar = ({ isLoggedIn, onLogout }) => {
   const userName = sessionStorage.getItem("userName");
@@ -93,7 +94,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                     position: "absolute",
                     top: "100%",
                     left: "0",
-                    background: "rgba(9, 22, 29, 0.98)",
+                    background: "rgba(0, 0, 0, 0.98)",
                     borderRadius: "0 0 4px 4px",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                     padding: "20px",
@@ -111,8 +112,12 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                     style={!isUploadApiAvailable ? { pointerEvents: 'none', opacity: 0.5, cursor: 'not-allowed' } : {}}
                     disabled={!isUploadApiAvailable}
                   >
-                    SCAN A VIDEO
+                    <p>SCAN A VIDEO</p>
+                    
                   </NavLink>
+
+                  <DownloadManager />
+
                   <NavLink 
                     to="/route-data" 
                     className={location.pathname === "/route-data" ? "active-link" : ""}

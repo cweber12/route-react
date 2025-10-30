@@ -29,7 +29,7 @@ export default function RegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <div className="child-container child-container-column"
+        <div className="nested-container column"
         style={{padding: 0}} >
             <input
             style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}} 

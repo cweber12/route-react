@@ -1,32 +1,29 @@
-import React from "react";
+// src/components/video-processing/ModelSettings.jsx
+// Component for adjusting model and image processing settings
 import "../../App.css";
 
 const ModelSettings = ({
-  /* Process every n-th frame */
+  // Process every n-th frame 
   frameSampleRate,
   setFrameSampleRate,
-  
-  /* SIFT parameters */
-  /* Number of features to detect */
+  // Number of SIFT features to detect
   siftNFeatures,
   setSiftNFeatures,
-  
-  /* Notifies backend to process with manually
-     input CLAHE parameters (tileGridSize, clipLimit) */
+  // CLAHE parameters
   enhanceContrast,
   setEnhanceContrast,
   clipLimit,
   setClipLimit,
   tileGridSize,
   setTileGridSize,
-
+  // Image sharpening
   sharpenImage,
   setSharpenImage,
   kernelEdge, 
   setKernelEdge,
   kernelCenter,
   setKernelCenter,
-
+  // Brightness adjustment
   adjustBrightness,
   setAdjustBrightness,
   gamma,
@@ -36,9 +33,11 @@ const ModelSettings = ({
 
   return (
     <>
-      {/* Additional Detection Settings */}
+      {/* Additional Settings Tab */}
       <h3 style={{margin: 0}}>Settings</h3>
-      <div className="child-container nested-row">
+
+      {/* Frame Sampling Rate */}
+      <div className="nested-container nested-row">
         <input
           type="number"
           step="1"
@@ -49,7 +48,9 @@ const ModelSettings = ({
         />
         <label> Detection Rate</label>
       </div>
-      <div className="child-container nested-row">
+
+      {/* Number of SIFT Features to Detect */}
+      <div className="nested-container nested-row">
         <input
           type="number"
           step="50"
@@ -61,7 +62,8 @@ const ModelSettings = ({
         <label> Detected Features</label>
       </div>
 
-      <div className="child-container nested-row">
+      {/* CLAHE Contrast Enhancement Checkbox */}
+      <div className="nested-container nested-row">
         <input
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
@@ -71,9 +73,11 @@ const ModelSettings = ({
         />
         <label>Enhance contrast</label>
       </div>
+
+      {/* CLAHE Parameters */}
       {enhanceContrast && (
         <>
-          <div className="child-container nested-row">
+          <div className="nested-container nested-row">
             <input
               type="number"
               step="1"
@@ -84,7 +88,7 @@ const ModelSettings = ({
             <label>Clip Limit</label>
           </div>
 
-          <div className="child-container nested-row">
+          <div className="nested-container nested-row">
             <input
               type="number"
               step="1"
@@ -97,8 +101,8 @@ const ModelSettings = ({
         </>
       )}
 
-
-      <div className="child-container nested-row">
+      {/* Image Sharpening Checkbox */}
+      <div className="nested-container nested-row">
         <input
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
@@ -108,34 +112,34 @@ const ModelSettings = ({
         <label>Sharpen</label>
       </div>
 
+      {/* Sharpening Kernel Parameters */}
       {sharpenImage && (
         <>
-        <div className="child-container nested-row">
-        <input
-          type="number"
-          step="0.01"
-          min="-3.0"
-          value={kernelEdge}
-          onChange={(e) => setKernelEdge(parseFloat(e.target.value))}
-        />
-        <label>Edge</label>
-      </div>
-
-      <div className="child-container nested-row">
-        <input
-          type="number"
-          step="0.01"
-          min="0.0"
-          value={kernelCenter}
-          onChange={(e) => setKernelCenter(parseFloat(e.target.value))}
-        />
-        <label>Center</label>
-      </div>
-      </>
+          <div className="nested-container nested-row">
+            <input
+              type="number"
+              step="0.01"
+              min="-3.0"
+              value={kernelEdge}
+              onChange={(e) => setKernelEdge(parseFloat(e.target.value))}
+            />
+            <label>Edge</label>
+          </div>
+          <div className="nested-container nested-row">
+            <input
+              type="number"
+              step="0.01"
+              min="0.0"
+              value={kernelCenter}
+              onChange={(e) => setKernelCenter(parseFloat(e.target.value))}
+            />
+            <label>Center</label>
+          </div>
+        </>
       )}
 
-
-      <div className="child-container nested-row">
+      {/* Brightness Adjustment Checkbox */}
+      <div className="nested-container nested-row">
         <input
           type="checkbox"
           style={{marginRight: 10, width: 20, height: 20}}
@@ -145,29 +149,19 @@ const ModelSettings = ({
         <label>Adjust Brightness</label>
       </div>
 
-      
+      {/* Brightness Adjustment Parameters */}
       {adjustBrightness && (
-
-        <div className="child-container nested-row">
-        <input
-          type="number"
-          step="0.1"
-          min="0.0"
-          value={gamma}
-          onChange={(e) => setGamma(parseFloat(e.target.value))}
-        />
-        <label>Gamma</label>
-      </div>
-
+        <div className="nested-container nested-row">
+          <input
+            type="number"
+            step="0.1"
+            min="0.0"
+            value={gamma}
+            onChange={(e) => setGamma(parseFloat(e.target.value))}
+          />
+          <label>Gamma</label>
+        </div>
       )}
-
-
-     
-      
-        
-        
-        
-   
     </>
   );
 };

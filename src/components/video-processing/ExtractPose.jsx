@@ -135,9 +135,7 @@ const ExtractPose = ({
             style={{ 
               height: "40px", 
               borderRadius: "4px", 
-              fontSize: "20px", 
-              fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
-            
+              fontSize: "20px",            
             }}
             disabled={!videoPath || loading || processing}
           >
@@ -148,18 +146,17 @@ const ExtractPose = ({
             ))}
           </select>
           <button
+            className="settings-button"
             onClick={() => {
               setShowParams(!showParams);
               setShowSiftSliders(!showSiftSliders); 
-            }}
-            className="settings-button" 
+            }} 
           >
             Toggle Settings
           </button>
 
           <button
             onClick={handleProcessVideo}
-            style={{borderRadius: "4px", padding: 0}}
             disabled={!videoPath || loading || processing}
           >
             {processing ? `${processingStatus}` : "Scan Video"}              
@@ -167,14 +164,14 @@ const ExtractPose = ({
           {processing && (
           <>
             <button
-              style={{borderRadius: "4px", background: "#f16a6f", width: "100%"}}
+              style={{background: "#f16a6f", width: "100%"}}
               onClick={handleCancel}>CANCEL
             </button>
           </>
         )}
         </div>
         {showParams && (
-          <div className="child-container child-container-column" 
+          <div className="nested-container column" 
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.5)", 
               color: "white", 
@@ -207,12 +204,9 @@ const ExtractPose = ({
               setAdjustBrightness={setAdjustBrightness}
               gamma={gamma}
               setGamma={setGamma}
-            
-              
             />
           </div>
-        )}
-        
+        )}        
       </div>
     </>
   );

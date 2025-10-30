@@ -98,21 +98,11 @@ const ViewRefFrames = ({ poseFilePath, siftFilePath, setAutoRefFramePath }) => {
         />
 
       </Zoom>
-        
-      <div className="child-container child-container-row" 
-      style={{
-        gap: "20px", 
-        alignItems: "center", 
-        justifyContent: "center",
-        padding: "20px",
-        alignSelf: "center",
-        width: "100%",
-        margin: 0, 
-        }}>
-   
-        <img 
-        src="assets/left.png"
-        alt="Previous Frame"
+
+      <div className="nested-container row">
+        <img
+          src="assets/left.png"
+          alt="Previous Frame"
         className="switch-icon"
         onClick={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
         />

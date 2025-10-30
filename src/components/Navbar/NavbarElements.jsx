@@ -32,7 +32,7 @@ export const NavMenu = styled.div`
     align-items: center;
     justify-content: flex-start;
     gap: 20px;
-    background: rgba(30, 30, 30, 0.8);
+    background: rgba(255, 255, 255, 0.8);
     padding: 0 20px;
     
     @media screen and (max-width: 480px) {
@@ -44,7 +44,7 @@ export const NavMenu = styled.div`
 
 export const NavLink = styled(Link)`
     color: lightgray;
-    background:rgba(39, 15, 15, 0.3); 
+    background:rgba(70, 70, 70, 0.3); 
     width: 240px;
     font-size: 16px;
     font-weight: 520;
@@ -57,7 +57,7 @@ export const NavLink = styled(Link)`
     margin: 0px;
     white-space: nowrap;
     transition: all 0.3s ease;
-    border-radius: 4px;   
+    border-radius: 4px;    
 
     
     &.active-link {

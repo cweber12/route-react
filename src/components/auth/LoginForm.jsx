@@ -28,8 +28,7 @@ export default function LoginForm({ onLogin }) {
 
   return (    
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <div className="child-container child-container-column"
-        style={{padding: 0}} >
+        <div className="nested-container column">
           <input 
           style={{width: "100%", height: "40px", fontSize: "22px", border: "1px solid #ccc", borderRadius: "4px"}}
           name="username" onChange={handleChange} placeholder="Username" required />
